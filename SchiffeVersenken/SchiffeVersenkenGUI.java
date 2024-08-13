@@ -358,13 +358,21 @@ public class SchiffeVersenkenGUI extends JFrame {
 
 	private void setzen() {
 		//Auslesen Schiff, Richtung, Feld(noch hinzufügen!!!!)
-		spieler1.setSchiff();
+		try {
+			spieler1.setSchiff();
+			//Tabelle aktualisieren --> resourcen sparender
+		}
+		catch(Exception  e) //error NAchrichten
+		{
+			
+		}
 		//Tabelle aktualisieren
+		
 	}
 
 	private void test() {
 	//for Zeile,Spalte	
-		if(spieler1.getSchuss(0, 0)) {	// .getSchuss(int, int)-->boolean True = treffer
+		if(spieler1.getZustand(0, 0)) {	// .getZustand(int, int)-->boolean True = treffer
 			//spieler1/2.getType(0,0,) --> (Feldtype)-->boolean True=Schiff
 		}
 		else {
