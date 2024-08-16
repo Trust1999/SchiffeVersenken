@@ -114,9 +114,9 @@ public class SchiffeData {
 			SpielFeld[z][s+1] = BelegtesFeld();
 	}
 
-	public boolean getZustand(int zeile, int spalte) {
+	public boolean getVersenkt(int zeile, int spalte) {
 		System.out.println("[Data] Schuss Felde " + zeile + " " + spalte);
-		return SpielFeld[zeile][spalte].getZustand();
+		return SpielFeld[zeile][spalte].getVersenkt();
 	}
 	
 	public boolean getType(int zeile, int spalte) {
