@@ -1,23 +1,8 @@
 package SchiffeDaten;
 
-public class Felder {
+public abstract class Felder {
 
-	private Boolean versenkt = false;
-	private Boolean treffer = false;
+	protected Boolean treffer = false;
 
-	public Boolean getVersenkt() {
-		return versenkt;
-	}
 
-	public Boolean getTreffer() {
-		return treffer;
-	}
-
-	public void setVersenkt(Boolean versenkt) {
-		this.versenkt = versenkt;
-	}
-
-	public void setTreffer(Boolean treffer) {
-		this.treffer = treffer;
-	}
 }
