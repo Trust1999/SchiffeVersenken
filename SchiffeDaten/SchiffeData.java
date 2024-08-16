@@ -100,7 +100,7 @@ public class SchiffeData {
 			zeile = zeile + r[0];
 			spalte = spalte + r[1];
 		}
-		schiff.setCountrt();
+		schiff.setCounter();
 	}
 
 	private void DummyFelder(int z, int s) {
