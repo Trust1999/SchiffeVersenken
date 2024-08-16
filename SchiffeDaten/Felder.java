@@ -2,13 +2,13 @@ package SchiffeDaten;
 
 public class Felder {
 
-	private boolean zustand = false;
+	private boolean versenkt = false;
 
-	public boolean getZustand() {
-		return zustand;
+	public boolean getVersenkt() {
+		return versenkt;
 	}
 
-	public void setZustand(boolean zustand) {
-		this.zustand = zustand;
+	public void setVersenkt(boolean versenkt) {
+		this.versenkt = versenkt;
 	}
 }
