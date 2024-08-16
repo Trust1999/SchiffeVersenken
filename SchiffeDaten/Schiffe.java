@@ -1,6 +1,6 @@
 package SchiffeDaten;
 
-public abstract class Schiffe extends Felder{
+public abstract class Schiffe extends Felder {
 
     protected Boolean versenkt = false;
     protected int anzahl = 0;
