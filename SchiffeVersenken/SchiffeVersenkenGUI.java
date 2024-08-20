@@ -16,6 +16,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -26,6 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.table.AbstractTableModel;
 
 import SchiffeDaten.SchiffeData;
 
@@ -33,6 +35,8 @@ public class SchiffeVersenkenGUI extends JFrame {
 	
 	private SchiffeData spieler1;
 	private SchiffeData spieler2;
+	private int Werspielt = 0;
+	
 	private JTextArea spielfeldTextArea;
 	private JLabel infoLabel;
 	private JTextField eingabeschuss;
@@ -73,11 +77,13 @@ public class SchiffeVersenkenGUI extends JFrame {
 	
 	// Panel8 - Setzen
 	private JPanel p8;
-	private JComboBox ComboBox;
+	private JComboBox ComboBoxSchiff;
+	private JComboBox ComboBoxRichtung;
 	private String[] schiffart = {"Schlachtschiff (5 Kästchen)","Kreuzer (4 Kästchen)",
 									"Zerstörer (3 Kästchen)","U-Boot (2 Kästchen)"};
 	private String[] richtungen = {"Norden","Osten","Süden","Westen"};
 	private JButton setzenButton;
+	private int Anzahl = 0;
 	
 	// Panel9 - Notizfeld2
 	private JPanel p9;
@@ -264,7 +270,7 @@ public class SchiffeVersenkenGUI extends JFrame {
 				schussButton = new JButton("Schuss");
 				schussButton.setBounds(30, 150, 300, 60);
 				p5.add(schussButton);
-				schussButton.addActionListener(e -> aktualisieren());
+				schussButton.addActionListener(e -> schuss());
 				
 				
 				//P6-Leer
@@ -322,12 +328,12 @@ public class SchiffeVersenkenGUI extends JFrame {
 				infoLabel.setBounds(30, 1, 50, 20);
 				p8.add(infoLabel);
 				
-				ComboBox = new JComboBox<String>(schiffart);
-				ComboBox.setBounds(30, 30, 300, 25);
-				p8.add(ComboBox);
-				ComboBox = new JComboBox<String>(richtungen);
-				ComboBox.setBounds(30, 65, 300, 25);
-				p8.add(ComboBox);
+				ComboBoxSchiff = new JComboBox<String>(schiffart);
+				ComboBoxSchiff.setBounds(30, 30, 300, 25);
+				p8.add(ComboBoxSchiff);
+				ComboBoxRichtung = new JComboBox<String>(richtungen);
+				ComboBoxRichtung.setBounds(30, 65, 300, 25);
+				p8.add(ComboBoxRichtung);
 				
 				eingabesetzen = new JTextField(null);
 				eingabesetzen.setBounds(30, 100, 300, 60);
@@ -385,50 +391,169 @@ public class SchiffeVersenkenGUI extends JFrame {
 				tabellenotizen2 = new JTable(datenMatrix, header);
 				tabellenotizen2.setBounds(50, 50, 150, 160);
 				p9.add(tabellenotizen2, BorderLayout.CENTER);
+				
+				//Bestimmung der Speilerreihenfolge
+				Random zufall = new Random();
+				Werspielt = Werspielt + zufall.nextInt(2);  //0 - inclusiv, 2 - exclusiv => 0 und 1
 			}
 
-	private void regeln_anzeigen() {
-		JOptionPane.showMessageDialog(this, "Es werden zehn Schiffe (in Form von Gruppen von Kästchen im Gitter) ohne Einsicht des\r\n"
-				+ "Gegners nach den folgenden Regeln platziert:\r\n"
-				+ "* Schiffe dürfen nicht aneinander angrenzen.\r\n"
-				+ "* Schiffe müssen als eine gerade Linie dargestellt werden.\r\n"
-				+ "* Schiffe dürfen am Gitterrand liegen.\r\n"
-				+ "* Schiffe dürfen nicht diagonal aufgestellt werden.\r\n"
-				+ "* Jeder Spieler platziert 10 Schiffe\r\n"
-				+ "   o ein Schlachtschiff (5 Kästchen groß)\r\n"
-				+ "   o zwei Kreuzer (je 4 Kästchen groß)\r\n"
-				+ "   o drei Zerstörer (je 3 Kästchen groß)\r\n"
-				+ "   o vier U-Boote (je 2 Kästchen groß)\r\n"
-				+ "Es wird zufällig bestimmt welcher Spieler beginnt. Der schießende Spieler gibt eine Koordinate im Gitter\r\n"
-				+ "an. Der beschossene Spieler gibt nun an, ob der schießende Spieler ein Schiff getroffen („Treffer“),\r\n"
-				+ "getroffen und versenkt („Treffer, versenkt“) oder verfehlt („Wasser“) hat. Der schießende Spieler kann sich\r\n"
-				+ "nun Notizen machen. Der beschossene Spieler markiert die Felder ebenfalls, um zu sehen, wenn ein\r\n"
-				+ "Schiff „versenkt“ ist.\r\n"
-				+ "Nach jedem Schuss wechseln die Spieler die Rollen.");
-	}
-
-			private void setzen() {
-				//Auslesen Schiff, Richtung, Feld(noch hinzufügen!!!!)
-				try {
-					spieler1.setSchiff();
-					aktualisieren();
+			private void schuss() {
+				String Zelle = eingabeschuss.getText();
+				switch (Werspielt %2) {
+				case 0:
+					Werspielt = Werspielt + 1;
+					try {
+						if(spieler1.setSchuss(Zelle) == true) {
+							aktualisieren(2); //Treffer
+						} else {
+							aktualisieren(3); //Vorbei
+						}
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(this, e);
+					}
+				case 1:
+					Werspielt = Werspielt + 1;
+					try {
+						if(spieler2.setSchuss(Zelle) == true) {
+							aktualisieren(4); //Treffer
+						} else {
+							aktualisieren(5); //Vorbei
+						}
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(this, e);
+					}
+				default:
+					System.out.println("[GUI] Error! Es kam bei der Bestimmung wer schiesst zu einem Fehler");
 				}
-				catch(Exception  e) //error Nachrichten
+			}
+	
+			private void setzen() {
+				String Schiff = ComboBoxSchiff.getSelectedItem().toString();
+				String Richtung = ComboBoxRichtung.getSelectedItem().toString();
+				String Zelle = eingabesetzen.getText();
+				
+				//ACHTUNG! HIER KOMMT GERADE NOCH ANDAUERND EIN ERROR!!!
+				if(Anzahl < 11) {
+					try {
+						spieler1.setSchiff(Schiff, Richtung, Zelle);
+						System.out.println("[GUI] Schiffsart: " + Schiff + ", Richtung: " + Richtung + ", Feld: " + Zelle);
+						Anzahl = Anzahl + 1;
+						System.out.println("Anzahl: " + Anzahl + " 111");
+						aktualisieren(0);
+					}
+					catch(Exception  e) //Error Nachrichten
+					{
+						JOptionPane.showMessageDialog(this, e);
+					}
+				}
+				try {
+					spieler2.setSchiff(Schiff, Richtung, Zelle);
+					System.out.println("[GUI] Schiffsart: " + Schiff + ", Richtung: " + Richtung + ", Feld: " + Zelle);
+					Anzahl = Anzahl + 1;
+					System.out.println("Anzahl: " + Anzahl + " 222");
+					aktualisieren(2);
+				}
+				catch(Exception  e) //Error Nachrichten
 				{
 					JOptionPane.showMessageDialog(this, e);
-					//Filler: "Achtung! Sie haben eine flasche Eingabe betätigt. \nBitte versuchen Sie es noch einmal. \nZur Erinnerung: Die Eingabe in den Textfeldern muss \ndie Form GroßbuchstabeZahl (z.B. A1, B2, C3, ...) haben."
 				}
-				aktualisieren();
+				if(Anzahl >= 20) {
+					setzenButton.setEnabled(false);
+					System.out.println("Setzen Button deaktiviert.");
+					spielbeginnt();
+				}
 			}
 
-			private void aktualisieren() {
-			//for Zeile,Spalte	
-				if(spieler1.getZustand(0, 0)) {	// .getZustand(int, int)-->boolean True = treffer
-					//spieler1/2.getType(0,0,) --> (Feldtype)-->boolean True=Schiff
+			private void spielbeginnt() {
+				if(Werspielt == 0) {
+					JOptionPane.showMessageDialog(this,"Spieler1 beginnt!");
 				}
-				else {
-					//spieler1/2.getType(0,0,) --> (Feldtype)-->boolean True=Schiff
+				if(Werspielt == 1) {
+					JOptionPane.showMessageDialog(this,"Spieler2 beginnt!");
+				} else {
+					System.out.println("[GUI] Error! Es kam bei der Bestimmung des Startspielers zu einem Fehler");
 				}
+			}
+
+			private void aktualisieren(int i) {
+			switch (i) {
+			case 0: //Setzen, Änderung bei Spieler1
+				setzen1();
+			case 1: //Setzen, Änderung bei Spieler2
+				setzen2();
+			case 2: //Spieler 1 Trifft, Änderung bei Spieler2 und Notizen1
+				s1treffer();
+			case 3: //Spieler 1 Verfehlt, Änderung bei Spieler2 und Notizen1
+				s1verfehlt();
+			case 4: //Spieler 2 Trifft, Änderung bei Spieler1 und Notizen2
+				s2treffer();
+			case 5: //Spieler 2 Verfehlt, Änderung bei Spieler1 und Notizen2
+				s2verfehlt();
+			default:
+				System.out.println("[GUI] Error! Es kam bei der Bestimmung welche Art von Aktualisierung zu einem Fehler");
+				}
+			}
+			
+			//ACHTUNG! Die Idee ist gut, aber es bleibt gerade in einer Endlosschleife hängen =(
+			private void setzen1() {
+				for (int i = 0; i < 10; i++) {
+					for (int j = 0; j < 10; j++) {
+						if(spieler1.getType(i, j)) {
+							datenMatrix[i][j] = "X";
+						}
+					}
+				}
+				((AbstractTableModel) tabellenotizen2.getModel()).fireTableDataChanged();
+			}
+			
+			private void setzen2() {
+				//wie bei setzen1()
+			}
+			
+			//ACHTUNG! Eigentlich schon zu viele Einrückungen. Wie anders machen?
+			private void s1treffer() {
+				for (int i = 0; i < 10;) {
+					for (int j = 0; j < 10;) {
+						if (spieler2.getType(i, j)) {
+							
+						}
+					}
+				}
+			}
+			
+			private void s1verfehlt() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			private void s2treffer() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			private void s2verfehlt() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			private void regeln_anzeigen() {
+				JOptionPane.showMessageDialog(this, "Es werden zehn Schiffe (in Form von Gruppen von Kästchen im Gitter) ohne Einsicht des\r\n"
+						+ "Gegners nach den folgenden Regeln platziert:\r\n"
+						+ "* Schiffe dürfen nicht aneinander angrenzen.\r\n"
+						+ "* Schiffe müssen als eine gerade Linie dargestellt werden.\r\n"
+						+ "* Schiffe dürfen am Gitterrand liegen.\r\n"
+						+ "* Schiffe dürfen nicht diagonal aufgestellt werden.\r\n"
+						+ "* Jeder Spieler platziert 10 Schiffe\r\n"
+						+ "   o ein Schlachtschiff (5 Kästchen groß)\r\n"
+						+ "   o zwei Kreuzer (je 4 Kästchen groß)\r\n"
+						+ "   o drei Zerstörer (je 3 Kästchen groß)\r\n"
+						+ "   o vier U-Boote (je 2 Kästchen groß)\r\n"
+						+ "Es wird zufällig bestimmt welcher Spieler beginnt. Der schießende Spieler gibt eine Koordinate im Gitter\r\n"
+						+ "an. Der beschossene Spieler gibt nun an, ob der schießende Spieler ein Schiff getroffen („Treffer“),\r\n"
+						+ "getroffen und versenkt („Treffer, versenkt“) oder verfehlt („Wasser“) hat. Der schießende Spieler kann sich\r\n"
+						+ "nun Notizen machen. Der beschossene Spieler markiert die Felder ebenfalls, um zu sehen, wenn ein\r\n"
+						+ "Schiff „versenkt“ ist.\r\n"
+						+ "Nach jedem Schuss wechseln die Spieler die Rollen.");
 			}
 		}
 			
