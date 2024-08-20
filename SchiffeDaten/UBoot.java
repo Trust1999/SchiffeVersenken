@@ -1,11 +1,11 @@
 package SchiffeDaten;
 
-public class Zerstoerer extends Schiffe{
+public class UBoot extends Schiffe{
 
-	public Zerstoerer() {
-	    this.anzahl = 3;
-	    this.laenge = 3;	
-	}
+    public UBoot() {
+    	this.anzahl = 4;
+    	this.laenge = 2;
+    }
     
 
     public Boolean getTreffer() {
