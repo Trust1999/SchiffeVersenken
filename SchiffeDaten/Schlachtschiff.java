@@ -13,6 +13,7 @@ public class Schlachtschiff extends Schiffe{
     }
     public void setTreffer() {
         this.treffer = true;
+        this.anzTreffer++;
         mengeSchiffe--;
     }
     public Boolean getVersenkt() {

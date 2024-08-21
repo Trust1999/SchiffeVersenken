@@ -13,6 +13,7 @@ public class Kreuzer extends Schiffe{
     
     public void setTreffer() {
         this.treffer = true;
+        this.anzTreffer++;
         mengeSchiffe--;
     }
     public Boolean getVersenkt() {
