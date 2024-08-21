@@ -1,18 +1,18 @@
 package SchiffeDaten;
 
-public class Kreuzer extends Schiffe{
+public class UBoot extends Schiffe{
+
+	protected static int anzahl = 4;
 	
-	protected static int anzahl = 2;
-	
-	public Kreuzer() {
-		this.laenge = 4;
-		this.position = 1;
-	}
-	  
+    public UBoot() {
+    	this.laenge = 2;
+    	this.position = 3;
+    }
+    
+
     public Boolean getTreffer() {
         return treffer;
     }
-    
     public void setTreffer() {
         this.treffer = true;
         this.anzTreffer++;
@@ -22,7 +22,7 @@ public class Kreuzer extends Schiffe{
         return versenkt;
     }
     public void setVersenkt() {
-        this.versenkt = versenkt;
+        this.versenkt = true;
     }
 
     public int getLaenge() {
@@ -32,14 +32,14 @@ public class Kreuzer extends Schiffe{
         return anzahl;
     }
     public void setAnzahl() {
-        Kreuzer.anzahl--;
+        anzahl--;
     }
-
-	protected int getMengeSchiffe() {
+    
+    protected int getMengeSchiffe() {
 		return mengeSchiffe;
 	}
-
-	protected int getPosition() {
+    
+    protected int getPosition() {
 		return position;
 	}
 }

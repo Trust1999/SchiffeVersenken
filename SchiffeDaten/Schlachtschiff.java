@@ -1,18 +1,23 @@
-package SchiffeDaten
+package SchiffeDaten;
 
 public class Schlachtschiff extends Schiffe{
 
-    private int counter = 1;
-    super super treffer;
-    super versenkt;
-    super anzahl;
-    super laenge = 5;
+	protected static int anzahl = 1;
+	
+    public Schlachtschiff() {
+    	//Schlachtschiff.anzahl = 1;
+    	this.laenge = 5;
+    	this.position = 0;
+    }
+    
 
-    public int getTreffer() {
+    public Boolean getTreffer() {
         return treffer;
     }
-    public void setTreffer(Boolean treffer) {
-        this.treffer = treffer;
+    public void setTreffer() {
+        this.treffer = true;
+        this.anzTreffer++;
+        mengeSchiffe--;
     }
     public Boolean getVersenkt() {
         return versenkt;
@@ -27,7 +32,16 @@ public class Schlachtschiff extends Schiffe{
     public int getAnzahl() {
         return anzahl;
     }
-    public void setCounter() {
-        counter--;
+    public void setAnzahl() {
+        anzahl--;
+        System.out.println("[Schlachtschiff] Anzahl: " + Schlachtschiff.anzahl);
     }
+    
+    protected int getMengeSchiffe() {
+		return mengeSchiffe;
+	}
+    
+    protected int getPosition() {
+		return position;
+	}
 }
