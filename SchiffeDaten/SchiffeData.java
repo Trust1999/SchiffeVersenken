@@ -1,6 +1,6 @@
 package SchiffeDaten;
 
-import java.util.StringTokenizer;
+import java.util.Scanner;
 
 public class SchiffeData {
 
@@ -10,7 +10,7 @@ public class SchiffeData {
 	 * static Klassen
 	*/
 	private int[] AnzahlSchiffe = {1,2,3,4};
-	private int mSchiff = 5 + 8 + 9 + 8;
+	private int mSchiff = 0;
 	
 	public SchiffeData() {
 		System.out.println("[Data] Spielfeld wird gefühlt");
@@ -28,16 +28,11 @@ public class SchiffeData {
 		int[] feldInt = ZelleToInt(Zelle);
 		
 		if(FreieFelder(schiff, richungsMatrix, feldInt )) {
-			if( AnzahlSchiffe[schiff.getPosition()] > 0) {
-				SchiffSetzen(Schiff, schiff, richungsMatrix, feldInt);
-			}
-			else {
+			if( AnzahlSchiffe[schiff.getPosition()] <= 0) {
 				System.out.println("[Data] Schiff nicht mehr vorhanden");
 				throw new Exception("kein Schiff mehr frei");
 			}
-		}
-		else {
-			throw new Exception("mindestens ein Feld ist belegt");
+			SchiffSetzen(Schiff, schiff, richungsMatrix, feldInt);
 		}
 	}
 	
@@ -81,32 +76,27 @@ public class SchiffeData {
 	    }
 	}
 	
-	/*TODO
-	 * Bug fixing
-	 * Leeres Feld usw.
-	 */
 	private int[] ZelleToInt(String f) throws Exception {
 		System.out.println("[Data] Umwandlung " + f + " in Int");
 		int[] zelle = {0,0};
-		StringTokenizer input = new StringTokenizer(f);
-	    String feld = input.nextToken();
-
-	    char feldChar = feld.charAt(0);
-	    if (feldChar < 'A' || feldChar > 'J') {
-	    	System.out.println("[Data] " + feldChar + " nicht in Range A-J");
-	        throw new Exception(feldChar + " außerhalb der Range");
-	    }
-	    zelle[1] = feldChar - 'A';
-	    System.out.println("[Data] Zeile in Int: " + zelle[0]);
-	    
-	    zelle[0] = Integer.parseInt(feld.substring(1)) - 1;
-	    if (zelle[1] < 0 || zelle[1] > 10) {
-	    	System.out.println("[Data] " + zelle[1] + " nicht in Range A-J");
-	         throw new Exception(zelle[1] + " außerhalb der Range");
-	    }
-	    System.out.println("[Data] Spalte in Int: " + zelle[1]);
-	    
-	    return zelle;
+		
+		 Scanner scanner = new Scanner(f);
+		 String eingabe = scanner.nextLine().toUpperCase();
+	        
+	     if (eingabe.matches("[A-J][1-9]") || eingabe.matches("[A-J]10")) {  
+	    	 char spalteChar = eingabe.charAt(0);
+	         zelle[1] = spalteChar - 'A';
+	            
+	         zelle[0] = Integer.parseInt(eingabe.substring(1)) - 1;
+	            
+	         System.out.println("[Data] " + zelle[1] + " " + zelle[0]);
+	     } else {
+	         System.out.println("[Data] Ungültige Eingabe");
+	         throw new Exception("Ungültige Eingabe! Bitte geben Sie ein Feld im Format A-J und 1-10 ein.");
+	     }
+	        
+	     scanner.close();
+	     return zelle;
 	}
 	
 	private boolean FreieFelder(Schiffe schiff, int[] r, int[] f) throws Exception {
@@ -115,19 +105,18 @@ public class SchiffeData {
 		
 		for(int i = 1; i <= schiff.getLaenge(); i++) {
 			if(((zeile < 0) || (spalte < 0) || (zeile > 9) || (spalte > 9))) {
-				return false;
+				System.out.println("[Data] Schiff aus Spielfeld");
+				throw new Exception("Schiff auserhalb des Spielfeldes platziert");
 			}
-			else {
-				if(!(SpielFeld[zeile][spalte] instanceof FreiesFeld)) {
-					System.out.println("[Data] Feld "+ zeile + spalte + " ist belegt");
-					return false;
-				}
-				else {
-					zeile = zeile + r[0];
-					spalte = spalte + r[1];
-				}
+			
+			if(!(SpielFeld[zeile][spalte] instanceof FreiesFeld)) {
+				System.out.println("[Data] Feld "+ zeile + spalte + " ist belegt");
+				throw new Exception("Feld ist belegt");
 			}
+			zeile = zeile + r[0];
+			spalte = spalte + r[1];			
 		}
+		
 		System.out.println("[Data] Feld "+ zeile + spalte + " ist frei");
 		return true;
 	}
@@ -138,36 +127,35 @@ public class SchiffeData {
 		
 		for(int i = 1; i <= schiff.getLaenge(); i++) {
 			SpielFeld[zeile][spalte] = SchiffType(Schiff);
-			System.out.println("[Data] Schiffteil " + zeile +" " + spalte);
 			DummyFelder(zeile, spalte);
+			System.out.println("[Data] Schiffteil " + zeile +" " + spalte);
 			zeile = zeile + r[0];
 			spalte = spalte + r[1];
 		}
+		
 		System.out.println("[Data] Schiff gesetzt");
+		mSchiff = schiff.getLaenge();
+		System.out.println("[Data] Aktuelle Schiffsfelder: " + mSchiff);
 		AnzahlSchiffe[schiff.getPosition()]--;
 	}
 
-	/*TODO
-	 * Bug
-	 */
-	private void DummyFelder(int z, int s) {
-		if((z-1 >= 0) && SpielFeld[z][s] instanceof FreiesFeld) {
-			SpielFeld[z-1][s] = new BelegtesFeld();
-			System.out.println("[Data] DummyFeld gesetzt: " + (z-1) + " " + s);
+	private void DummyFelder(int zeile, int spalte) {
+		if((zeile-1 >= 0) && SpielFeld[zeile-1][spalte] instanceof FreiesFeld) {
+			SpielFeld[zeile-1][spalte] = new BelegtesFeld();
+			System.out.println("[Data] DummyFeld gesetzt: " + (zeile-1) + " " + spalte);
 		}
-		if((z+1 <= 9) && SpielFeld[z][s] instanceof FreiesFeld) {
-			SpielFeld[z+1][s] = new BelegtesFeld();
-			System.out.println("[Data] DummyFeld gesetzt: " + (z+1) + " " + s);	
+		if((zeile+1 <= 9) && SpielFeld[zeile+1][spalte] instanceof FreiesFeld) {
+			SpielFeld[zeile+1][spalte] = new BelegtesFeld();
+			System.out.println("[Data] DummyFeld gesetzt: " + (zeile+1) + " " + spalte);	
 		}	
-		if((s-1 >= 0) && SpielFeld[z][s] instanceof FreiesFeld) {
-			SpielFeld[z][s-1] = new BelegtesFeld();
-			System.out.println("[Data] DummyFeld gesetzt: " + z + " " + (s-1));
+		if((spalte-1 >= 0) && SpielFeld[zeile][spalte-1] instanceof FreiesFeld) {
+			SpielFeld[zeile][spalte-1] = new BelegtesFeld();
+			System.out.println("[Data] DummyFeld gesetzt: " + zeile + " " + (spalte-1));
 		}
-		if((s+1 <= 9) && SpielFeld[z][s] instanceof FreiesFeld) {
-			SpielFeld[z][s+1] = new BelegtesFeld();
-			System.out.println("[Data] DummyFeld gesetzt: " + z + " " + (s+1));
+		if((spalte+1 <= 9) && SpielFeld[zeile][spalte+1] instanceof FreiesFeld) {
+			SpielFeld[zeile][spalte+1] = new BelegtesFeld();
+			System.out.println("[Data] DummyFeld gesetzt: " + zeile + " " + (spalte+1));
 		}
-		System.out.println("[Data] Dummy eingefügt");
 	}
 
 	/*TODO
@@ -207,16 +195,16 @@ public class SchiffeData {
 			System.out.println("[Data] Feld schon getroffen");
 			throw new Exception("Feld wurde schon beschossen");
 		}
-		else {
-			System.out.println("[Data] Feld  getroffen");
-			SpielFeld[zeile][spalte].setTreffer();
-			if(SpielFeld[zeile][spalte] instanceof Schiffe) {
-				setVersenkt(zeile, spalte);
-				mSchiff--;
-				return Spielend(zeile, spalte);	
-			}
-			return true;
+		
+		System.out.println("[Data] Feld  getroffen");
+		SpielFeld[zeile][spalte].setTreffer();
+		
+		if(SpielFeld[zeile][spalte] instanceof Schiffe) {
+			setVersenkt(zeile, spalte);
+			mSchiff--;
+			return Spielend(zeile, spalte);	
 		}
+		return true;
 	}
 
 	private boolean Spielend(int zeile, int spalte) {
@@ -230,5 +218,12 @@ public class SchiffeData {
 			System.out.println("[Data] kein Spielende");
 			return true;
 		}	
+	}
+	
+	private boolean Spielerwechsel() {
+		if(mSchiff == 40) {	//40 Gesamtzahl der Schiffsfelder
+			return true;
+		}
+		return false;		
 	}
 }
