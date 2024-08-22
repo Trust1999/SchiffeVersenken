@@ -320,7 +320,7 @@ public class SchiffeVersenkenGUI extends JFrame {
 				infoLabel = new JLabel("Schuss:");
 				infoLabel.setBounds(30, 1, 50, 20);
 				p5.add(infoLabel);
-				infoLabel = new JLabel("Schuss in der Form Großbuchstabe-Zahl angeben:");
+				infoLabel = new JLabel("Schuss in der Form Buchstabe-Zahl angeben:");
 				infoLabel.setBounds(30, 20, 500, 20);
 				p5.add(infoLabel);
 				
@@ -550,7 +550,7 @@ public class SchiffeVersenkenGUI extends JFrame {
 			
 			private void schuss() {
 				String Zelle = eingabeschuss.getText();
-				switch (Werspielt %2) {
+				switch (Werspielt % 2) {
 				case 0:
 					Werspielt = Werspielt + 1;
 					try {
@@ -566,7 +566,7 @@ public class SchiffeVersenkenGUI extends JFrame {
 							rechterSchirmAus();
 							JOptionPane.showMessageDialog(this, "   Spieler 1 hat gewonnen! \n   "
 									+ "Um erneut zu spielen schließen Sie das Programm \n   "
-									+ "und starten Sie es von neuem.");
+									+ "und starten Sie es von Neuem.");
 						}
 					} catch (Exception e) {
 						JOptionPane.showMessageDialog(this, e);
@@ -631,6 +631,7 @@ public class SchiffeVersenkenGUI extends JFrame {
 							if(spieler2.getVersenktGUI(i, j)) {
 								datenMatrixs2[i][j] = "#";
 								datenMatrixn1[i][j] = "#";
+								System.out.println("[GUI] Ein Schiff von Spieler 2 wurde durch den finalen Treffer bei "+i+" "+j+" versenkt.");
 							}
 						}
 						else if(spieler2.getStatus(i, j)){
@@ -652,6 +653,7 @@ public class SchiffeVersenkenGUI extends JFrame {
 							if(spieler1.getVersenktGUI(i, j)) {
 								datenMatrixs1[i][j] = "#";
 								datenMatrixn2[i][j] = "#";
+								System.out.println("[GUI] Schiff von Spieler 1 wurde bei "+i+" "+j+" versenkt");
 							}
 						}
 						else if(spieler1.getStatus(i, j)){
