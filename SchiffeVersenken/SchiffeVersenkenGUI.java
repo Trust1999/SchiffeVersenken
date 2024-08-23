@@ -1,15 +1,3 @@
-/* Noch die Tabellen unschreibbar für den Benutzer machen? Dafür braucht es aber Zeug, was ich so nicht kenne :
- * // Erstellen eines nicht editierbaren DefaultTableModel
-        DefaultTableModel model = new DefaultTableModel(data, columnNames) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false; // Alle Zellen sind nicht editierbar
-            }
-        };
-
-        JTable table = new JTable(model);
- */
-
 package SchiffeVersenken;
 
 import java.awt.BorderLayout;
@@ -535,7 +523,7 @@ public class SchiffeVersenkenGUI extends JFrame {
 
 			private void spielbeginnt() {
 				if(Werspielt == 0) {
-					//Schirm auf rechter Seite
+					rechterSchirmAn();
 					JOptionPane.showMessageDialog(this,"Spieler1 beginnt!");
 					linkerSchirmAus();
 				}
@@ -552,9 +540,9 @@ public class SchiffeVersenkenGUI extends JFrame {
 				String Zelle = eingabeschuss.getText();
 				switch (Werspielt %2) {
 				case 0:
-					Werspielt = Werspielt + 1;
 					try {
 						if(spieler2.setSchuss(Zelle)) {
+							Werspielt = Werspielt + 1;
 							System.out.println("[GUI] Tabelle wird aktualisiert");
 							s1schuss();
 							JOptionPane.showMessageDialog(this, "Spielerwechsel: Spieler 2 ist dran.");
@@ -573,14 +561,14 @@ public class SchiffeVersenkenGUI extends JFrame {
 					}
 					break;
 				case 1:
-					Werspielt = Werspielt + 1;
 					try {
 						if(spieler1.setSchuss(Zelle)) {
+							Werspielt = Werspielt + 1;
 							System.out.println("[GUI] Tabelle wird aktualisiert");
 							s2schuss();
 							JOptionPane.showMessageDialog(this, "Spielerwechsel: Spieler 1 ist dran.");
-							linkerSchirmAus();
 							rechterSchirmAn();
+							linkerSchirmAus();
 							break;
 						} else {
 							s2schuss();
@@ -712,7 +700,10 @@ public class SchiffeVersenkenGUI extends JFrame {
 				schirm3.setEditable(false);
 				
 				//für das eigentliche zeichnen
-				repaint();
+				p1.revalidate();
+				p1.repaint();
+				p7.revalidate();
+				p7.repaint();
 			}
 			
 			private void linkerSchirmAus() {
@@ -746,11 +737,19 @@ public class SchiffeVersenkenGUI extends JFrame {
 				yachsen1_10.setVisible(true);
 				
 				//vorherigen Zustand einrichten
-				schirm1.setVisible(false);
+				p1.remove(schirm1);
+				System.out.println("[GUI] Schirm 1 aus");
 				
 				linkerSchirmMitteAus();
 				
-				schirm3.setVisible(false);
+				p7.remove(schirm3);
+				System.out.println("[GUI] Schirm 3 aus");
+				
+				//für das eigentliche zeichnen
+				p1.revalidate();
+				p1.repaint();
+				p7.revalidate();
+				p7.repaint();
 			}
 			
 			private void linkerSchirmMitteAn() {
@@ -760,11 +759,15 @@ public class SchiffeVersenkenGUI extends JFrame {
 				schirm2.setFont(new Font("Arial", Font.PLAIN, 40));
 				p4.add(schirm2);
 				schirm2.setEditable(false);
-				repaint();
+				p4.revalidate();
+				p4.repaint();
 			}
 			
 			private void linkerSchirmMitteAus() {
-				schirm2.setVisible(false);
+				p4.remove(schirm2);
+				System.out.println("[GUI] Schirm 2 aus");
+				p4.revalidate();
+				p4.repaint();
 			}
 			
 			private void rechterSchirmAn() {
@@ -815,7 +818,10 @@ public class SchiffeVersenkenGUI extends JFrame {
 				schirm6.setEditable(false);
 				
 				//für das eigentliche zeichnen
-				repaint();
+				p3.revalidate();
+				p3.repaint();
+				p9.revalidate();
+				p9.repaint();
 			}
 			
 			private void rechterSchirmAus() {
@@ -849,11 +855,17 @@ public class SchiffeVersenkenGUI extends JFrame {
 				yachsen2_10.setVisible(true);
 				
 				//vorherigen Zustand einrichten
-				schirm4.setVisible(false);
+				p3.remove(schirm4);
 				
 				rechterSchirmMitteAus();
 				
-				schirm6.setVisible(false);
+				p9.remove(schirm6);
+				
+				//für das eigentliche zeichnen
+				p3.revalidate();
+				p3.repaint();
+				p9.revalidate();
+				p9.repaint();
 			}
 			
 			private void rechterSchirmMitteAn() {
@@ -863,11 +875,14 @@ public class SchiffeVersenkenGUI extends JFrame {
 				schirm5.setFont(new Font("Arial", Font.PLAIN, 40));
 				p6.add(schirm5);
 				schirm5.setEditable(false);
-				repaint();
+				p6.revalidate();
+				p6.repaint();
 			}
 			
 			private void rechterSchirmMitteAus() {
-				schirm5.setVisible(false);
+				p6.remove(schirm5);
+				p6.revalidate();
+				p6.repaint();
 			}
 			
 			private void regeln_anzeigen() {
