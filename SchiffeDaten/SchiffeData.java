@@ -38,16 +38,16 @@ public class SchiffeData {
 	
 	private Schiffe SchiffType(String s) {
 		switch(s) {
-		case "Schlachtschiff (5 Kästchen)": 
+		case "Schlachtschiff (5 Kästchen) [1 Stück]": 
 			System.out.println("[Data] Schlachtschiff wird erstellt");
 			return new Schlachtschiff();
-		case "Kreuzer (4 Kästchen)":
+		case "Kreuzer (4 Kästchen) [2 Stück]":
 			System.out.println("[Data] Kreuzer wird erstellt");
 			return new Kreuzer();
-		case "Zerstörer (3 Kästchen)":
+		case "Zerstörer (3 Kästchen) [3 Stück]":
 			System.out.println("[Data] Zerstörer wird erstellt");
 			return new Zerstoerer();
-		case "U-Boot (2 Kästchen)":
+		case "U-Boot (2 Kästchen) [4 Stück]":
 			System.out.println("[Data] U-Boot wird erstellt");
 			return new UBoot();
 		default: 
@@ -134,7 +134,7 @@ public class SchiffeData {
 		}
 		
 		System.out.println("[Data] Schiff gesetzt");
-		mSchiff = schiff.getLaenge();
+		mSchiff += schiff.getLaenge();
 		System.out.println("[Data] Aktuelle Schiffsfelder: " + mSchiff);
 		AnzahlSchiffe[schiff.getPosition()]--;
 	}
@@ -220,8 +220,8 @@ public class SchiffeData {
 		}	
 	}
 	
-	private boolean Spielerwechsel() {
-		if(mSchiff == 40) {	//40 Gesamtzahl der Schiffsfelder
+	public boolean Spielerwechsel() {
+		if(mSchiff == 30) {	//30 Gesamtzahl der Schiffsfelder
 			return true;
 		}
 		return false;		
