@@ -13,7 +13,7 @@ public class SchiffeData {
 	private int mSchiff = 0;
 	
 	public SchiffeData() {
-		System.out.println("[Data] Spielfeld wird gefühlt");
+		System.out.println("[Data] Spielfeld wird gefüllt");
 		SpielFeld = new Felder[10][10];
 		for(int z = 0; z <= 9; z++) {
 			for(int s = 0; s <= 9; s++) {
@@ -121,13 +121,14 @@ public class SchiffeData {
 		return true;
 	}
 	
-	private void SchiffSetzen(String Schiff, Schiffe schiff, int[] r, int[] f) {
+	private void SchiffSetzen(String schiffsTyp, Schiffe schiff, int[] r, int[] f) {
 		int zeile = f[0];
 		int spalte = f[1];
 		
 		for(int i = 1; i <= schiff.getLaenge(); i++) {
-			SpielFeld[zeile][spalte] = SchiffType(Schiff);
+			SpielFeld[zeile][spalte] = SchiffType(schiffsTyp);
 			DummyFelder(zeile, spalte);
+			SpielFeld[zeile][spalte].setRichtung(r);
 			System.out.println("[Data] Schiffteil " + zeile +" " + spalte);
 			zeile = zeile + r[0];
 			spalte = spalte + r[1];
@@ -158,19 +159,6 @@ public class SchiffeData {
 		}
 	}
 
-	/*TODO
-	 * Implementieren - Johannes
-	 */
-	public boolean getVersenktGUI(int zeile, int spalte) {
-		boolean versenkt = SpielFeld[zeile][spalte].getVersenkt();
-		System.out.println("[Data] Versenktes Felde " + zeile + " " + spalte + ": " + versenkt);
-		return versenkt;
-	}
-	/*TODO
-	 * Implementiernen - Johannes
-	 */
-	private void setVersenkt(int zeile, int spalte) {
-	}
 	
 	public boolean getType(int zeile, int spalte) {
 		boolean schiff = SpielFeld[zeile][spalte] instanceof Schiffe;
@@ -200,12 +188,80 @@ public class SchiffeData {
 		SpielFeld[zeile][spalte].setTreffer();
 		
 		if(SpielFeld[zeile][spalte] instanceof Schiffe) {
+			System.out.println("[Data] VersenkungsTest startet!");
+			erhoeheTrefferCount(zeile, spalte);			
 			setVersenkt(zeile, spalte);
 			mSchiff--;
 			return Spielend(zeile, spalte);	
 		}
 		return true;
 	}
+	
+	private void erhoeheTrefferCount(int zeile, int spalte) {
+		int zeilenRichtung = SpielFeld[zeile][spalte].getRichtung()[0];
+		int spaltenRichtung = SpielFeld[zeile][spalte].getRichtung()[1];
+		int z = zeile - zeilenRichtung;	//Kopien für den 2. Durchgang in die entgegengesetzte Richtung
+		int s = spalte - spaltenRichtung;
+		try {
+			while(SpielFeld[zeile][spalte] instanceof Schiffe) {
+				SpielFeld[zeile][spalte].setAnzTreffer();
+				System.out.println("[Data] erhöheTC Feld " + (zeile) + " " + (spalte));
+				System.out.println("[Data] Anzahl Treffer: "+SpielFeld[zeile][spalte].getAnzTreffer());
+				zeile += zeilenRichtung;
+				spalte += spaltenRichtung;
+			}
+		} catch(Exception e) {
+			System.out.println("[Data] Ende des Spielfeldes erreicht");
+		}
+		try {
+			while(SpielFeld[z][s] instanceof Schiffe) {
+				SpielFeld[z][s].setAnzTreffer();
+				System.out.println("[Data] erhöheTC Feld " + (z) + " " + (s));
+				System.out.println("[Data] Anzahl Treffer: "+SpielFeld[z][s].getAnzTreffer());
+				z -= zeilenRichtung;
+				s -= spaltenRichtung;
+			}
+		} catch(Exception e) {
+			System.out.println("[Data] Ende des Spielfeldes erreicht");
+		}
+		
+	}
+
+	public boolean getVersenktGUI(int zeile, int spalte) {
+		
+		boolean versenkt = SpielFeld[zeile][spalte].getVersenkt();
+		
+		System.out.println("[Data] Feld " + zeile + " " + spalte + " versenkt? " + versenkt);
+		return versenkt;
+	}
+
+	private void setVersenkt(int zeile, int spalte) {
+		System.out.println("[Data] Feld ["+zeile+","+spalte+"] Anzahl Treffer: " + SpielFeld[zeile][spalte].getAnzTreffer() + " Länge: " + SpielFeld[zeile][spalte].getLaenge());
+		
+		int zeilenRichtung = SpielFeld[zeile][spalte].getRichtung()[0];
+		int spaltenRichtung = SpielFeld[zeile][spalte].getRichtung()[1];
+		int z = zeile;	//Kopien für den 2. Durchgang in die entgegengesetzte Richtung
+		int s = spalte;
+		try {
+			while(SpielFeld[zeile][spalte] instanceof Schiffe) {
+				SpielFeld[zeile][spalte].setVersenkt(SpielFeld[zeile][spalte].getAnzTreffer() >= SpielFeld[zeile][spalte].getLaenge());
+				zeile += zeilenRichtung;
+				spalte += spaltenRichtung;
+			}
+		} catch(Exception e) {
+			System.out.println("[Data] Ende des Spielfeldes erreicht");
+		}
+		try {
+			while(SpielFeld[z][s] instanceof Schiffe) {
+				SpielFeld[z][s].setVersenkt(SpielFeld[z][s].getAnzTreffer() >= SpielFeld[z][s].getLaenge());
+				z -= zeilenRichtung;
+				s -= spaltenRichtung;
+			}
+		} catch(Exception e) {
+			System.out.println("[Data] Ende des Spielfeldes erreicht");
+		}
+	}
+	
 
 	private boolean Spielend(int zeile, int spalte) {
 		//int mengeSchiffe = ((Schiffe) SpielFeld[zeile][spalte]).getMengeSchiffe();
