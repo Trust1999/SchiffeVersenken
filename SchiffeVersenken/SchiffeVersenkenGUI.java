@@ -4,9 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Random;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -24,11 +27,11 @@ public class SchiffeVersenkenGUI extends JFrame {
 
 	
 	Random zufall = new Random();	//Bestimmung der Speilerreihenfolge
-	private int Werspielt = zufall.nextInt(2); //0 - inclusiv, 2 - exclusiv => 0 und 1
+	private int werSpielt = zufall.nextInt(2); //0 - inclusiv, 2 - exclusiv => 0 und 1
 	
 	private SchiffeData spieler1;
 	private SchiffeData spieler2;
-	private int Anzahl = 0;
+	private int anzahl = 0;
 	
 	private JTextArea spielfeldTextArea;
 	private JLabel infoLabel;
@@ -65,6 +68,8 @@ public class SchiffeVersenkenGUI extends JFrame {
 	// Panel2 - Legende
 	private JPanel p2;
 	private JButton regelnButton;
+	private JButton debug_modusAn;
+	private JButton debug_modusAus;
 	
 	// Panel3 - Spielfeld2
 	private JPanel p3;
@@ -112,8 +117,8 @@ public class SchiffeVersenkenGUI extends JFrame {
 	
 	// Panel8 - Setzen
 	private JPanel p8;
-	private JComboBox ComboBoxSchiff;
-	private JComboBox ComboBoxRichtung;
+	private JComboBox comboBoxSchiff;
+	private JComboBox comboBoxRichtung;
 	private String[] schiffart = {"Schlachtschiff (5 Kästchen) [1 Stück]","Kreuzer (4 Kästchen) [2 Stück]",
 									"Zerstörer (3 Kästchen) [3 Stück]","U-Boot (2 Kästchen) [4 Stück]"};
 	private String[] richtungen = {"Norden","Osten","Süden","Westen"};
@@ -233,6 +238,15 @@ public class SchiffeVersenkenGUI extends JFrame {
 				tabellespieler1 = new JTable(datenMatrixs1, header);
 				tabellespieler1.setBounds(50, 50, 150, 160);
 				p1.add(tabellespieler1, BorderLayout.CENTER);
+				
+				//Schirm 1
+				schirm1 = new JTextArea("\n\n       Spieler 2 ist dran");
+				schirm1.setBounds(getBounds(getBounds()));
+				schirm1.setBackground(Color.green);
+				schirm1.setFont(new Font("Arial", Font.PLAIN, 40));
+				p1.add(schirm1);
+				schirm1.setEditable(false);
+				schirm1.setVisible(false);
 
 				//P2-Legende
 				p2.setBackground(Color.decode("#98EAE9"));
@@ -249,8 +263,22 @@ public class SchiffeVersenkenGUI extends JFrame {
 				p2.add(spielfeldTextArea);
 				spielfeldTextArea.setEditable(false);
 				
+				infoLabel = new JLabel("   Debug-Modus:");
+				infoLabel.setBounds(340, 20, 115, 40);
+				p2.add(infoLabel);
+				
+				debug_modusAn = new JButton("aktivieren");
+				debug_modusAn.setBounds(340, 55, 115, 40);
+				p2.add(debug_modusAn);
+				debug_modusAn.addActionListener(e -> debugModusAn());
+				
+				debug_modusAus = new JButton("deaktivieren");
+				debug_modusAus.setBounds(340, 105, 115, 40);
+				p2.add(debug_modusAus);
+				debug_modusAus.addActionListener(e -> debugModusAus());
+				
 				regelnButton = new JButton("Regeln");
-				regelnButton.setBounds(340, 195, 100, 40);
+				regelnButton.setBounds(340, 195, 115, 40);
 				p2.add(regelnButton);
 				regelnButton.addActionListener(e -> regeln_anzeigen());
 				
@@ -300,8 +328,26 @@ public class SchiffeVersenkenGUI extends JFrame {
 				tabellespieler2.setBounds(50, 50, 150, 160);
 				p3.add(tabellespieler2, BorderLayout.CENTER);
 				
+				//Schirm 4
+				schirm4 = new JTextArea("\n\n       Spieler 1 ist dran");
+				schirm4.setBounds(getBounds(getBounds()));
+				schirm4.setBackground(Color.green);
+				schirm4.setFont(new Font("Arial", Font.PLAIN, 40));
+				p3.add(schirm4);
+				schirm4.setEditable(false);
+				schirm4.setVisible(false);
+				
 				//P4-Leer
 				p4.setBackground(Color.decode("#98EAE9"));
+				
+				//Schuss 2
+				schirm2 = new JTextArea("\n\n       Spieler 2 ist dran");
+				schirm2.setBounds(getBounds(getBounds()));
+				schirm2.setBackground(Color.green);
+				schirm2.setFont(new Font("Arial", Font.PLAIN, 40));
+				p4.add(schirm2);
+				schirm2.setEditable(false);
+				schirm2.setVisible(false);
 				
 				//P5-Schuss
 				p5.setBackground(Color.decode("#98EAE9"));
@@ -327,6 +373,15 @@ public class SchiffeVersenkenGUI extends JFrame {
 				
 				//P6-Leer
 				p6.setBackground(Color.decode("#98EAE9"));
+				
+				//Schirm 5
+				schirm5 = new JTextArea("\n\n       Spieler 1 ist dran");
+				schirm5.setBounds(getBounds(getBounds()));
+				schirm5.setBackground(Color.green);
+				schirm5.setFont(new Font("Arial", Font.PLAIN, 40));
+				p6.add(schirm5);
+				schirm5.setEditable(false);
+				schirm5.setVisible(false);
 				
 				//P7-Notizen1
 				p7.setBackground(Color.decode("#98EAE9"));
@@ -374,18 +429,27 @@ public class SchiffeVersenkenGUI extends JFrame {
 				tabellenotizen1.setBounds(50, 50, 150, 160);
 				p7.add(tabellenotizen1, BorderLayout.CENTER);
 				
+				//Schirm 3
+				schirm3 = new JTextArea("\n\n       Spieler 2 ist dran");
+				schirm3.setBounds(getBounds(getBounds()));
+				schirm3.setBackground(Color.green);
+				schirm3.setFont(new Font("Arial", Font.PLAIN, 40));
+				p7.add(schirm3);
+				schirm3.setEditable(false);
+				schirm3.setVisible(false);
+				
 				//P8-Setzen
 				p8.setBackground(Color.decode("#98EAE9"));
 				infoLabel = new JLabel("Setzen:");
 				infoLabel.setBounds(30, 10, 50, 20);
 				p8.add(infoLabel);
 				
-				ComboBoxSchiff = new JComboBox<String>(schiffart);
-				ComboBoxSchiff.setBounds(30, 30, 300, 25);
-				p8.add(ComboBoxSchiff);
-				ComboBoxRichtung = new JComboBox<String>(richtungen);
-				ComboBoxRichtung.setBounds(30, 65, 300, 25);
-				p8.add(ComboBoxRichtung);
+				comboBoxSchiff = new JComboBox<String>(schiffart);
+				comboBoxSchiff.setBounds(30, 30, 300, 25);
+				p8.add(comboBoxSchiff);
+				comboBoxRichtung = new JComboBox<String>(richtungen);
+				comboBoxRichtung.setBounds(30, 65, 300, 25);
+				p8.add(comboBoxRichtung);
 				
 				eingabesetzen = new JTextField(null);
 				eingabesetzen.setBounds(30, 100, 300, 60);
@@ -444,33 +508,31 @@ public class SchiffeVersenkenGUI extends JFrame {
 				tabellenotizen2.setBounds(50, 50, 150, 160);
 				p9.add(tabellenotizen2, BorderLayout.CENTER);
 				
+				//Schirm 6
+				schirm6 = new JTextArea("\n\n       Spieler 1 ist dran");
+				schirm6.setBounds(getBounds(getBounds()));
+				schirm6.setBackground(Color.green);
+				schirm6.setFont(new Font("Arial", Font.PLAIN, 40));
+				p9.add(schirm6);
+				schirm6.setEditable(false);
+				schirm6.setVisible(false);
+				
 				rechterSchirmAn();
-				//JOptionPane.showMessageDialog(this, "Spieler 1 setzt zuerst alle seine/ihre Schiffe.");
-				
-				
 	}
-		
+
 	/*****************************************************************
 	 *****************************************************************/
 	
 			private void setzen() {
-				String Schiff = ComboBoxSchiff.getSelectedItem().toString();
-				String Richtung = ComboBoxRichtung.getSelectedItem().toString();
+				String Schiff = comboBoxSchiff.getSelectedItem().toString();
+				String Richtung = comboBoxRichtung.getSelectedItem().toString();
 				String Zelle = eingabesetzen.getText();
 				
-				
-				/*TODO
-				 * hier kommt neue Funktion
-				 * spieler1.Spielerwechsel(); false ->wechsel
-				 */
-				if(Anzahl < 2) { // 10 //spieler1.Spielerwechsel() && debungging ->aus
+				if(!(spieler1.Spielerwechsel())) { //spieler1.Spielerwechsel() && debungging ->aus
 					try {
-						
 						spieler1.setSchiff(Schiff, Richtung, Zelle);
 						System.out.println("[GUI] Schiffsart: " + Schiff + ", Richtung: " + Richtung 
 											+ ", Feld: " + Zelle);
-						Anzahl = Anzahl + 1;
-						System.out.println("Anzahl: " + Anzahl + " Spieler 1");
 						setzen1();
 					}
 					catch(Exception  e) //Error Nachrichten
@@ -483,8 +545,6 @@ public class SchiffeVersenkenGUI extends JFrame {
 						spieler2.setSchiff(Schiff, Richtung, Zelle);
 						System.out.println("[GUI] Schiffsart: " + Schiff + ", Richtung: " + Richtung 
 											+ ", Feld: " + Zelle);
-						Anzahl = Anzahl + 1;
-						System.out.println("Anzahl: " + Anzahl + " Spieler 2");
 						setzen2();
 					}
 					catch(Exception  e) //Error Nachrichten
@@ -493,7 +553,8 @@ public class SchiffeVersenkenGUI extends JFrame {
 					}
 				}
 				//Schirmwechsel
-				if(Anzahl == 2) { //10
+				if(spieler1.Spielerwechsel() && anzahl == 0) {
+					anzahl += 1;
 					setzenButton.setEnabled(false);
 					Timer timer = new Timer(1000, ex -> {
 						rechterSchirmAus();
@@ -502,13 +563,8 @@ public class SchiffeVersenkenGUI extends JFrame {
 					});
 					timer.setRepeats(false);
 					timer.start();
-					
 				}
-				/*TODO
-				 * hier kommt neue Funktion
-				 * spieler2.Spielerwechsel(); false ->wechsel
-				 */
-				if(Anzahl >= 4) {
+				if(spieler2.Spielerwechsel()) {
 					rechterSchirmAn();
 					setzenButton.setEnabled(false);
 					eingabesetzen.setEnabled(false);
@@ -522,13 +578,11 @@ public class SchiffeVersenkenGUI extends JFrame {
 			}
 
 			private void spielbeginnt() {
-				if(Werspielt == 0) {
-					rechterSchirmAn();
+				if(werSpielt == 0) {
 					JOptionPane.showMessageDialog(this,"Spieler1 beginnt!");
 					linkerSchirmAus();
 				}
-				if(Werspielt == 1) {
-					linkerSchirmAn();
+				if(werSpielt == 1) {
 					JOptionPane.showMessageDialog(this,"Spieler2 beginnt!");
 					rechterSchirmAus();
 				} else {
@@ -538,11 +592,11 @@ public class SchiffeVersenkenGUI extends JFrame {
 			
 			private void schuss() {
 				String Zelle = eingabeschuss.getText();
-				switch (Werspielt %2) {
+				switch (werSpielt %2) {
 				case 0:
 					try {
 						if(spieler2.setSchuss(Zelle)) {
-							Werspielt = Werspielt + 1;
+							werSpielt = werSpielt + 1;
 							System.out.println("[GUI] Tabelle wird aktualisiert");
 							s1schuss();
 							JOptionPane.showMessageDialog(this, "Spielerwechsel: Spieler 2 ist dran.");
@@ -553,7 +607,7 @@ public class SchiffeVersenkenGUI extends JFrame {
 							s1schuss();
 							rechterSchirmAus();
 							JOptionPane.showMessageDialog(this, "   Spieler 1 hat gewonnen! \n   "
-									+ "Um erneut zu spielen schließen Sie das Programm \n   "
+									+ "Um erneut zu spielen schließen Sie die Anwendung \n   "
 									+ "und starten Sie es von neuem.");
 						}
 					} catch (Exception e) {
@@ -563,7 +617,7 @@ public class SchiffeVersenkenGUI extends JFrame {
 				case 1:
 					try {
 						if(spieler1.setSchuss(Zelle)) {
-							Werspielt = Werspielt + 1;
+							werSpielt = werSpielt + 1;
 							System.out.println("[GUI] Tabelle wird aktualisiert");
 							s2schuss();
 							JOptionPane.showMessageDialog(this, "Spielerwechsel: Spieler 1 ist dran.");
@@ -574,7 +628,7 @@ public class SchiffeVersenkenGUI extends JFrame {
 							s2schuss();
 							linkerSchirmAus();
 							JOptionPane.showMessageDialog(this, "   Spieler 2 hat gewonnen! \n   "
-									+ "Um erneut zu spielen schließen Sie das Programm \n   "
+									+ "Um erneut zu spielen schließen Sie die Anwendung \n   "
 									+ "und starten Sie es von neuem.");
 						}
 					} catch (Exception e) {
@@ -689,6 +743,7 @@ public class SchiffeVersenkenGUI extends JFrame {
 				schirm1.setFont(new Font("Arial", Font.PLAIN, 40));
 				p1.add(schirm1);
 				schirm1.setEditable(false);
+				schirm1.setVisible(true);
 				
 				linkerSchirmMitteAn();
 				
@@ -698,6 +753,7 @@ public class SchiffeVersenkenGUI extends JFrame {
 				schirm3.setFont(new Font("Arial", Font.PLAIN, 40));
 				p7.add(schirm3);
 				schirm3.setEditable(false);
+				schirm3.setVisible(true);
 				
 				//für das eigentliche zeichnen
 				p1.revalidate();
@@ -759,6 +815,8 @@ public class SchiffeVersenkenGUI extends JFrame {
 				schirm2.setFont(new Font("Arial", Font.PLAIN, 40));
 				p4.add(schirm2);
 				schirm2.setEditable(false);
+				schirm2.setVisible(true);
+				
 				p4.revalidate();
 				p4.repaint();
 			}
@@ -807,6 +865,7 @@ public class SchiffeVersenkenGUI extends JFrame {
 				schirm4.setFont(new Font("Arial", Font.PLAIN, 40));
 				p3.add(schirm4);
 				schirm4.setEditable(false);
+				schirm4.setVisible(true);
 				
 				rechterSchirmMitteAn();
 				
@@ -816,6 +875,7 @@ public class SchiffeVersenkenGUI extends JFrame {
 				schirm6.setFont(new Font("Arial", Font.PLAIN, 40));
 				p9.add(schirm6);
 				schirm6.setEditable(false);
+				schirm6.setVisible(true);
 				
 				//für das eigentliche zeichnen
 				p3.revalidate();
@@ -856,16 +916,19 @@ public class SchiffeVersenkenGUI extends JFrame {
 				
 				//vorherigen Zustand einrichten
 				p3.remove(schirm4);
+				System.out.println("[GUI] Schirm 4 aus");
 				
 				rechterSchirmMitteAus();
 				
 				p9.remove(schirm6);
+				System.out.println("[GUI] Schirm 6 aus");
 				
 				//für das eigentliche zeichnen
 				p3.revalidate();
 				p3.repaint();
 				p9.revalidate();
 				p9.repaint();
+				
 			}
 			
 			private void rechterSchirmMitteAn() {
@@ -875,14 +938,29 @@ public class SchiffeVersenkenGUI extends JFrame {
 				schirm5.setFont(new Font("Arial", Font.PLAIN, 40));
 				p6.add(schirm5);
 				schirm5.setEditable(false);
+				schirm5.setVisible(true);
+				
 				p6.revalidate();
 				p6.repaint();
 			}
 			
 			private void rechterSchirmMitteAus() {
 				p6.remove(schirm5);
+				System.out.println("[GUI] Schirm 5 aus");
 				p6.revalidate();
 				p6.repaint();
+			}
+			
+			private void debugModusAn() {
+				JOptionPane.showMessageDialog(this, "Debug-Modus eingeschaltet.");
+				linkerSchirmAus();
+				rechterSchirmAus();
+			}
+
+			private void debugModusAus() {
+				JOptionPane.showMessageDialog(this, "Debug-Modus ausgeschaltet.");
+				linkerSchirmAn();
+				rechterSchirmAn();
 			}
 			
 			private void regeln_anzeigen() {
