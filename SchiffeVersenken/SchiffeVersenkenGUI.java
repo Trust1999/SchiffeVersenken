@@ -534,9 +534,8 @@ public class SchiffeVersenkenGUI extends JFrame {
 	/*****************************************************************
 	 *****************************************************************/
 	
-			private void setzen() {
-								
-				if(!(spieler1.Spielerwechsel() || Debugmodus()== 0)) { //spieler1.Spielerwechsel() && debungging ->aus
+			private void setzen() {		
+				if(!(spieler1.Spielerwechsel() || Debugmodus() == 0)) { //spieler1.Spielerwechsel() && debungging ->aus
 					SchiffSpieler(spieler1,datenMatrixs1);
 					((AbstractTableModel) tabellespieler1.getModel()).fireTableDataChanged();
 				}
@@ -723,7 +722,7 @@ public class SchiffeVersenkenGUI extends JFrame {
 				if(debug) {
 					return Debugmodus();
 				}
-				return werSpielt()%2;
+				return werSpielt%2;
 			}
 
 			private void linkerSchirmAn() {
