@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
@@ -32,6 +33,8 @@ public class SchiffeVersenkenGUI extends JFrame {
 	private SchiffeData spieler1;
 	private SchiffeData spieler2;
 	private int anzahl = 0;
+	
+	private boolean debug = false;
 	
 	private JTextArea spielfeldTextArea;
 	private JLabel infoLabel;
@@ -118,10 +121,13 @@ public class SchiffeVersenkenGUI extends JFrame {
 	// Panel8 - Setzen
 	private JPanel p8;
 	private JComboBox comboBoxSchiff;
+	@SuppressWarnings("rawtypes")
 	private JComboBox comboBoxRichtung;
 	private String[] schiffart = {"Schlachtschiff (5 Kästchen) [1 Stück]","Kreuzer (4 Kästchen) [2 Stück]",
 									"Zerstörer (3 Kästchen) [3 Stück]","U-Boot (2 Kästchen) [4 Stück]"};
 	private String[] richtungen = {"Norden","Osten","Süden","Westen"};
+	private JComboBox comboBoxSpieler;
+	private String[] spieler = {"Spieler1", "Spieler2"};
 	private JButton setzenButton;
 	
 	// Panel9 - Notizfeld2
@@ -276,6 +282,11 @@ public class SchiffeVersenkenGUI extends JFrame {
 				debug_modusAus.setBounds(340, 105, 115, 40);
 				p2.add(debug_modusAus);
 				debug_modusAus.addActionListener(e -> debugModusAus());
+				
+				comboBoxSpieler = new JComboBox<String>(spieler);
+				comboBoxSpieler.setBounds(340, 150, 115, 20);
+				p2.add(comboBoxSpieler);
+				comboBoxSpieler.setVisible(false);
 				
 				regelnButton = new JButton("Regeln");
 				regelnButton.setBounds(340, 195, 115, 40);
@@ -450,7 +461,7 @@ public class SchiffeVersenkenGUI extends JFrame {
 				comboBoxRichtung = new JComboBox<String>(richtungen);
 				comboBoxRichtung.setBounds(30, 65, 300, 25);
 				p8.add(comboBoxRichtung);
-				
+								
 				eingabesetzen = new JTextField(null);
 				eingabesetzen.setBounds(30, 100, 300, 60);
 				eingabesetzen.setHorizontalAlignment(JTextField.CENTER);
@@ -524,35 +535,47 @@ public class SchiffeVersenkenGUI extends JFrame {
 	 *****************************************************************/
 	
 			private void setzen() {
+								
+				if(!(spieler1.Spielerwechsel() || Debugmodus()== 0)) { //spieler1.Spielerwechsel() && debungging ->aus
+					SchiffSpieler(spieler1,datenMatrixs1);
+					((AbstractTableModel) tabellespieler1.getModel()).fireTableDataChanged();
+				}
+				else {
+					SchiffSpieler(spieler2,datenMatrixs2);
+					((AbstractTableModel) tabellespieler2.getModel()).fireTableDataChanged();
+				}
+				Schirmwechsel1();
+				Schirmwechsel2();
+			}
+			
+			private void SchiffSpieler(SchiffeData spieler, String[][] matrix) {
 				String Schiff = comboBoxSchiff.getSelectedItem().toString();
 				String Richtung = comboBoxRichtung.getSelectedItem().toString();
 				String Zelle = eingabesetzen.getText();
 				
-				if(!(spieler1.Spielerwechsel())) { //spieler1.Spielerwechsel() && debungging ->aus
-					try {
-						spieler1.setSchiff(Schiff, Richtung, Zelle);
-						System.out.println("[GUI] Schiffsart: " + Schiff + ", Richtung: " + Richtung 
-											+ ", Feld: " + Zelle);
-						setzen1();
-					}
-					catch(Exception  e) //Error Nachrichten
-					{
-						JOptionPane.showMessageDialog(this, e);
+				try {
+					spieler.setSchiff(Schiff, Richtung, Zelle);
+					System.out.println("[GUI] Schiffsart: " + Schiff + ", Richtung: " + Richtung 
+										+ ", Feld: " + Zelle);
+					setzenSchiff(spieler, matrix);
+				}
+				catch(Exception  e) //Error Nachrichten
+				{
+					JOptionPane.showMessageDialog(this, e);
+				}
+			}
+
+			private void setzenSchiff(SchiffeData spieler, String[][] matrix) {
+				for (int i = 0; i < 10; i++) {
+					for (int j = 0; j < 10; j++) {
+						if(spieler.getType(i,j)) {
+							matrix[i][j] = "+";
+						}
 					}
 				}
-				else {
-					try {
-						spieler2.setSchiff(Schiff, Richtung, Zelle);
-						System.out.println("[GUI] Schiffsart: " + Schiff + ", Richtung: " + Richtung 
-											+ ", Feld: " + Zelle);
-						setzen2();
-					}
-					catch(Exception  e) //Error Nachrichten
-					{
-						JOptionPane.showMessageDialog(this, e);
-					}
-				}
-				//Schirmwechsel
+			}
+			
+			private void Schirmwechsel1() {
 				if(spieler1.Spielerwechsel() && anzahl == 0) {
 					anzahl += 1;
 					setzenButton.setEnabled(false);
@@ -564,6 +587,9 @@ public class SchiffeVersenkenGUI extends JFrame {
 					timer.setRepeats(false);
 					timer.start();
 				}
+			}
+			
+			private void Schirmwechsel2() {
 				if(spieler2.Spielerwechsel()) {
 					rechterSchirmAn();
 					setzenButton.setEnabled(false);
@@ -574,7 +600,7 @@ public class SchiffeVersenkenGUI extends JFrame {
 					eingabeschuss.setEnabled(true);
 					System.out.println("[GUI] Schuss Button und Schuss Eingabefeld aktiviert.");
 					spielbeginnt();	
-				}
+				}	
 			}
 
 			private void spielbeginnt() {
@@ -591,175 +617,171 @@ public class SchiffeVersenkenGUI extends JFrame {
 			}
 			
 			private void schuss() {
-				String Zelle = eingabeschuss.getText();
-				switch (werSpielt %2) {
-				case 0:
-					try {
-						if(spieler2.setSchuss(Zelle)) {
-							werSpielt = werSpielt + 1;
-							System.out.println("[GUI] Tabelle wird aktualisiert");
-							s1schuss();
-							JOptionPane.showMessageDialog(this, "Spielerwechsel: Spieler 2 ist dran.");
-							rechterSchirmAus();
-							linkerSchirmAn();
-							break;
-						} else {
-							s1schuss();
-							rechterSchirmAus();
-							JOptionPane.showMessageDialog(this, "   Spieler 1 hat gewonnen! \n   "
-									+ "Um erneut zu spielen schließen Sie die Anwendung \n   "
-									+ "und starten Sie es von neuem.");
-						}
-					} catch (Exception e) {
-						JOptionPane.showMessageDialog(this, e);
-					}
-					break;
+				switch (werSpielt()) {
 				case 1:
 					try {
-						if(spieler1.setSchuss(Zelle)) {
-							werSpielt = werSpielt + 1;
-							System.out.println("[GUI] Tabelle wird aktualisiert");
-							s2schuss();
-							JOptionPane.showMessageDialog(this, "Spielerwechsel: Spieler 1 ist dran.");
-							rechterSchirmAn();
-							linkerSchirmAus();
-							break;
-						} else {
-							s2schuss();
-							linkerSchirmAus();
-							JOptionPane.showMessageDialog(this, "   Spieler 2 hat gewonnen! \n   "
-									+ "Um erneut zu spielen schließen Sie die Anwendung \n   "
-									+ "und starten Sie es von neuem.");
-						}
+						SpielerSchuss(spieler2, datenMatrixs2, datenMatrixn1, tabellespieler2, tabellenotizen1);
 					} catch (Exception e) {
 						JOptionPane.showMessageDialog(this, e);
 					}
 					break;
-				default:
-					System.out.println("[GUI] Error! Es kam bei der Bestimmung wer schiesst zu einem Fehler");
+				case 0:
+					try {
+						SpielerSchuss(spieler1, datenMatrixs1, datenMatrixn2, tabellespieler1, tabellenotizen2);
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(this, e);
+					}
 					break;
 				}
 			}
 			
-			//ACHTUNG! Eigentlich schon zu viele Einrückungen.
-			private void setzen1() {
-				for (int i = 0; i < 10; i++) {
-					for (int j = 0; j < 10; j++) {
-						if(spieler1.getType(i,j)) {
-							datenMatrixs1[i][j] = "+";
-						}
-					}
+
+			private void SpielerSchuss(SchiffeData spieler,String[][] matrix1, 
+					String[][] matrix2, JTable tabellespieler, JTable tabellenotizen) throws HeadlessException, Exception {
+				String Zelle = eingabeschuss.getText();
+				
+				if(spieler.setSchuss(Zelle)) {
+					werSpielt = werSpielt + 1;
+					//s1schuss();
+					schuss(spieler, matrix1, matrix2, tabellespieler, tabellenotizen);
+					if(!debug) Ausgabe1();
+				} else {
+					//s1schuss();
+					schuss(spieler, matrix1, matrix2, tabellespieler, tabellenotizen);
+					Ausgabe2();
 				}
-				((AbstractTableModel) tabellespieler1.getModel()).fireTableDataChanged();
+			}
+
+			private void Ausgabe1() {
+				switch (werSpielt%2) {
+				case 1:
+					JOptionPane.showMessageDialog(this, "Spielerwechsel: Spieler 2 ist dran.");
+					rechterSchirmAus();
+					linkerSchirmAn();
+					break;
+				case 0:
+					JOptionPane.showMessageDialog(this, "Spielerwechsel: Spieler 1 ist dran.");
+					rechterSchirmAn();
+					linkerSchirmAus();
+					break;
+				default:
+				}
+				
+			}
+
+			private void Ausgabe2() {
+				switch (werSpielt%2) {
+				case 1:
+					rechterSchirmAus();
+					JOptionPane.showMessageDialog(this, "   Spieler 1 hat gewonnen! \n   "
+							+ "Um erneut zu spielen schließen Sie die Anwendung \n   "
+							+ "und starten Sie es von neuem.");
+					break;
+				case 0:
+					linkerSchirmAus();
+					JOptionPane.showMessageDialog(this, "   Spieler 2 hat gewonnen! \n   "
+							+ "Um erneut zu spielen schließen Sie die Anwendung \n   "
+							+ "und starten Sie es von neuem.");
+					break;
+				default:
+				}
 			}
 			
-			private void setzen2() {
-				for (int i = 0; i < 10; i++) {
-					for (int j = 0; j < 10; j++) {
-						if(spieler2.getType(i,j)) {
-							datenMatrixs2[i][j] = "+";
-						}
-					}
-				}
-				((AbstractTableModel) tabellespieler2.getModel()).fireTableDataChanged();
+			private void schuss(SchiffeData spieler, String[][] datenMatrixSpieler, String[][] datenMatrixNotizen, JTable tabellespieler, JTable tabellenotizen) {
+			    for (int i = 0; i < 10; i++) {
+			        for (int j = 0; j < 10; j++) {
+			            if(spieler.getStatus(i,j) && spieler.getType(i,j)) {
+			                datenMatrixSpieler[i][j] = "X";  // Treffer
+			                datenMatrixNotizen[i][j] = "X";
+			                if(spieler.getVersenktGUI(i, j)) {
+			                    datenMatrixSpieler[i][j] = "#";  // Versenkt
+			                    datenMatrixNotizen[i][j] = "#";
+			                }
+			            }
+			            else if(spieler.getStatus(i, j)){
+			                datenMatrixSpieler[i][j] = "O";  // Wasser (Schuss ins Leere)
+			                datenMatrixNotizen[i][j] = "O";
+			            }
+			        }
+			    }
+			    ((AbstractTableModel) tabellespieler.getModel()).fireTableDataChanged();
+			    ((AbstractTableModel) tabellenotizen.getModel()).fireTableDataChanged();
 			}
 			
-			private void s1schuss() {
-				for (int i = 0; i < 10; i++) {
-					for (int j = 0; j < 10; j++) {
-						if(spieler2.getStatus(i,j) && spieler2.getType(i,j)) {
-							datenMatrixs2[i][j] = "X";
-							datenMatrixn1[i][j] = "X";
-							if(spieler2.getVersenktGUI(i, j)) {
-								datenMatrixs2[i][j] = "#";
-								datenMatrixn1[i][j] = "#";
-							}
-						}
-						else if(spieler2.getStatus(i, j)){
-							datenMatrixs2[i][j] = "O";
-							datenMatrixn1[i][j] = "O";
-						}
+			private int Debugmodus() {
+				String Spieler = comboBoxSpieler.getSelectedItem().toString();
+				if(debug) {
+					switch(Spieler) {
+					case "Spieler1": return 1;
+					case "Spieler2": return 0;
 					}
 				}
-				((AbstractTableModel) tabellespieler2.getModel()).fireTableDataChanged();
-				((AbstractTableModel) tabellenotizen1.getModel()).fireTableDataChanged();
+				return 999999;
 			}
 			
-			private void s2schuss() {
-				for (int i = 0; i < 10; i++) {
-					for (int j = 0; j < 10; j++) {
-						if(spieler1.getStatus(i,j) && spieler1.getType(i,j)) {
-							datenMatrixs1[i][j] = "X";
-							datenMatrixn2[i][j] = "X";
-							if(spieler1.getVersenktGUI(i, j)) {
-								datenMatrixs1[i][j] = "#";
-								datenMatrixn2[i][j] = "#";
-							}
-						}
-						else if(spieler1.getStatus(i, j)){
-							datenMatrixs1[i][j] = "O";
-							datenMatrixn2[i][j] = "O";
-						}
-					}
+			private int werSpielt() {
+				if(debug) {
+					return Debugmodus();
 				}
-				((AbstractTableModel) tabellespieler1.getModel()).fireTableDataChanged();
-				((AbstractTableModel) tabellenotizen2.getModel()).fireTableDataChanged();
+				return werSpielt()%2;
 			}
-			
+
 			private void linkerSchirmAn() {
-				//Tabellen verstecken
-				tabellespieler1.setVisible(false);
-				labels1.setVisible(false);
-				xachses1.setVisible(false);
-				yachses1_1.setVisible(false);
-				yachses1_2.setVisible(false);
-				yachses1_3.setVisible(false);
-				yachses1_4.setVisible(false);
-				yachses1_5.setVisible(false);
-				yachses1_6.setVisible(false);
-				yachses1_7.setVisible(false);
-				yachses1_8.setVisible(false);
-				yachses1_9.setVisible(false);
-				yachses1_10.setVisible(false);
-				
-				tabellenotizen1.setVisible(false);
-				labeln1.setVisible(false);
-				xachsen1.setVisible(false);
-				yachsen1_1.setVisible(false);
-				yachsen1_2.setVisible(false);
-				yachsen1_3.setVisible(false);
-				yachsen1_4.setVisible(false);
-				yachsen1_5.setVisible(false);
-				yachsen1_6.setVisible(false);
-				yachsen1_7.setVisible(false);
-				yachsen1_8.setVisible(false);
-				yachsen1_9.setVisible(false);
-				yachsen1_10.setVisible(false);
-				
-				//schirm erstellen
-				schirm1 = new JTextArea("\n\n       Spieler 2 ist dran");
-				schirm1.setBounds(getBounds(getBounds()));
-				schirm1.setBackground(Color.green);
-				schirm1.setFont(new Font("Arial", Font.PLAIN, 40));
-				p1.add(schirm1);
-				schirm1.setEditable(false);
-				schirm1.setVisible(true);
-				
-				linkerSchirmMitteAn();
-				
-				schirm3 = new JTextArea("\n\n       Spieler 2 ist dran");
-				schirm3.setBounds(getBounds(getBounds()));
-				schirm3.setBackground(Color.green);
-				schirm3.setFont(new Font("Arial", Font.PLAIN, 40));
-				p7.add(schirm3);
-				schirm3.setEditable(false);
-				schirm3.setVisible(true);
-				
-				//für das eigentliche zeichnen
-				p1.revalidate();
-				p1.repaint();
-				p7.revalidate();
-				p7.repaint();
+				if(!debug) {
+					//Tabellen verstecken
+					tabellespieler1.setVisible(false);
+					labels1.setVisible(false);
+					xachses1.setVisible(false);
+					yachses1_1.setVisible(false);
+					yachses1_2.setVisible(false);
+					yachses1_3.setVisible(false);
+					yachses1_4.setVisible(false);
+					yachses1_5.setVisible(false);
+					yachses1_6.setVisible(false);
+					yachses1_7.setVisible(false);
+					yachses1_8.setVisible(false);
+					yachses1_9.setVisible(false);
+					yachses1_10.setVisible(false);
+					
+					tabellenotizen1.setVisible(false);
+					labeln1.setVisible(false);
+					xachsen1.setVisible(false);
+					yachsen1_1.setVisible(false);
+					yachsen1_2.setVisible(false);
+					yachsen1_3.setVisible(false);
+					yachsen1_4.setVisible(false);
+					yachsen1_5.setVisible(false);
+					yachsen1_6.setVisible(false);
+					yachsen1_7.setVisible(false);
+					yachsen1_8.setVisible(false);
+					yachsen1_9.setVisible(false);
+					yachsen1_10.setVisible(false);
+					
+					//schirm erstellen
+					schirm1 = new JTextArea("\n\n       Spieler 2 ist dran");
+					schirm1.setBounds(getBounds(getBounds()));
+					schirm1.setBackground(Color.green);
+					schirm1.setFont(new Font("Arial", Font.PLAIN, 40));
+					p1.add(schirm1);
+					schirm1.setEditable(false);
+					schirm1.setVisible(true);
+					
+					linkerSchirmMitteAn();
+					
+					schirm3 = new JTextArea("\n\n       Spieler 2 ist dran");
+					schirm3.setBounds(getBounds(getBounds()));
+					schirm3.setBackground(Color.green);
+					schirm3.setFont(new Font("Arial", Font.PLAIN, 40));
+					p7.add(schirm3);
+					schirm3.setEditable(false);
+					schirm3.setVisible(true);
+					
+					//für das eigentliche zeichnen
+					p1.revalidate();
+					p1.repaint();
+					p7.revalidate();
+					p7.repaint();
+				}
 			}
 			
 			private void linkerSchirmAus() {
@@ -829,59 +851,61 @@ public class SchiffeVersenkenGUI extends JFrame {
 			}
 			
 			private void rechterSchirmAn() {
-				//Tabellen verstecken
-				tabellespieler2.setVisible(false);
-				labels2.setVisible(false);
-				xachses2.setVisible(false);
-				yachses2_1.setVisible(false);
-				yachses2_2.setVisible(false);
-				yachses2_3.setVisible(false);
-				yachses2_4.setVisible(false);
-				yachses2_5.setVisible(false);
-				yachses2_6.setVisible(false);
-				yachses2_7.setVisible(false);
-				yachses2_8.setVisible(false);
-				yachses2_9.setVisible(false);
-				yachses2_10.setVisible(false);
-				
-				tabellenotizen2.setVisible(false);
-				labeln2.setVisible(false);
-				xachsen2.setVisible(false);
-				yachsen2_1.setVisible(false);
-				yachsen2_2.setVisible(false);
-				yachsen2_3.setVisible(false);
-				yachsen2_4.setVisible(false);
-				yachsen2_5.setVisible(false);
-				yachsen2_6.setVisible(false);
-				yachsen2_7.setVisible(false);
-				yachsen2_8.setVisible(false);
-				yachsen2_9.setVisible(false);
-				yachsen2_10.setVisible(false);
-				
-				//schirm erstellen
-				schirm4 = new JTextArea("\n\n       Spieler 1 ist dran");
-				schirm4.setBounds(getBounds(getBounds()));
-				schirm4.setBackground(Color.green);
-				schirm4.setFont(new Font("Arial", Font.PLAIN, 40));
-				p3.add(schirm4);
-				schirm4.setEditable(false);
-				schirm4.setVisible(true);
-				
-				rechterSchirmMitteAn();
-				
-				schirm6 = new JTextArea("\n\n       Spieler 1 ist dran");
-				schirm6.setBounds(getBounds(getBounds()));
-				schirm6.setBackground(Color.green);
-				schirm6.setFont(new Font("Arial", Font.PLAIN, 40));
-				p9.add(schirm6);
-				schirm6.setEditable(false);
-				schirm6.setVisible(true);
-				
-				//für das eigentliche zeichnen
-				p3.revalidate();
-				p3.repaint();
-				p9.revalidate();
-				p9.repaint();
+				if(!debug) {
+					//Tabellen verstecken
+					tabellespieler2.setVisible(false);
+					labels2.setVisible(false);
+					xachses2.setVisible(false);
+					yachses2_1.setVisible(false);
+					yachses2_2.setVisible(false);
+					yachses2_3.setVisible(false);
+					yachses2_4.setVisible(false);
+					yachses2_5.setVisible(false);
+					yachses2_6.setVisible(false);
+					yachses2_7.setVisible(false);
+					yachses2_8.setVisible(false);
+					yachses2_9.setVisible(false);
+					yachses2_10.setVisible(false);
+					
+					tabellenotizen2.setVisible(false);
+					labeln2.setVisible(false);
+					xachsen2.setVisible(false);
+					yachsen2_1.setVisible(false);
+					yachsen2_2.setVisible(false);
+					yachsen2_3.setVisible(false);
+					yachsen2_4.setVisible(false);
+					yachsen2_5.setVisible(false);
+					yachsen2_6.setVisible(false);
+					yachsen2_7.setVisible(false);
+					yachsen2_8.setVisible(false);
+					yachsen2_9.setVisible(false);
+					yachsen2_10.setVisible(false);
+					
+					//schirm erstellen
+					schirm4 = new JTextArea("\n\n       Spieler 1 ist dran");
+					schirm4.setBounds(getBounds(getBounds()));
+					schirm4.setBackground(Color.green);
+					schirm4.setFont(new Font("Arial", Font.PLAIN, 40));
+					p3.add(schirm4);
+					schirm4.setEditable(false);
+					schirm4.setVisible(true);
+					
+					rechterSchirmMitteAn();
+					
+					schirm6 = new JTextArea("\n\n       Spieler 1 ist dran");
+					schirm6.setBounds(getBounds(getBounds()));
+					schirm6.setBackground(Color.green);
+					schirm6.setFont(new Font("Arial", Font.PLAIN, 40));
+					p9.add(schirm6);
+					schirm6.setEditable(false);
+					schirm6.setVisible(true);
+					
+					//für das eigentliche zeichnen
+					p3.revalidate();
+					p3.repaint();
+					p9.revalidate();
+					p9.repaint();
+				}
 			}
 			
 			private void rechterSchirmAus() {
@@ -913,22 +937,21 @@ public class SchiffeVersenkenGUI extends JFrame {
 				yachsen2_8.setVisible(true);
 				yachsen2_9.setVisible(true);
 				yachsen2_10.setVisible(true);
-				
+					
 				//vorherigen Zustand einrichten
 				p3.remove(schirm4);
 				System.out.println("[GUI] Schirm 4 aus");
-				
+					
 				rechterSchirmMitteAus();
-				
+					
 				p9.remove(schirm6);
 				System.out.println("[GUI] Schirm 6 aus");
-				
+					
 				//für das eigentliche zeichnen
 				p3.revalidate();
 				p3.repaint();
 				p9.revalidate();
 				p9.repaint();
-				
 			}
 			
 			private void rechterSchirmMitteAn() {
@@ -953,13 +976,18 @@ public class SchiffeVersenkenGUI extends JFrame {
 			
 			private void debugModusAn() {
 				JOptionPane.showMessageDialog(this, "Debug-Modus eingeschaltet.");
+				comboBoxSpieler.setVisible(true);
+				debug = true;
+				schussButton.setEnabled(true);
+				eingabeschuss.setEnabled(true);
 				linkerSchirmAus();
 				rechterSchirmAus();
 			}
 
 			private void debugModusAus() {
 				JOptionPane.showMessageDialog(this, "Debug-Modus ausgeschaltet.");
-				linkerSchirmAn();
+				comboBoxSpieler.setVisible(false);
+				debug = false;
 				rechterSchirmAn();
 			}
 			

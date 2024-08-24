@@ -2,10 +2,16 @@ package SchiffeDaten;
 
 public abstract class Felder {
 
-	protected Boolean treffer = false;
-	protected Boolean versenkt = false;
+	protected boolean treffer = false;
+	protected boolean versenkt = false;
 	
-	protected abstract void setTreffer();
-	protected abstract Boolean getTreffer();
-	protected abstract Boolean getVersenkt();
+	public abstract void setTreffer();
+	public abstract boolean getTreffer();
+	public abstract boolean getVersenkt();
+	public abstract int getAnzTreffer();
+	public abstract int getLaenge();
+	public abstract void setVersenkt(boolean b);
+	public abstract int[] getRichtung();
+	public abstract void setAnzTreffer();
+	public abstract void setRichtung(int[] r);
 }
