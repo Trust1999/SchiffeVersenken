@@ -70,7 +70,6 @@ public class SchiffeVersenkenGUI extends JFrame {
 	
 	// Panel2 - Legende
 	private JPanel p2;
-	private JButton regelnButton;
 	private JButton debug_modusAn;
 	private JButton debug_modusAus;
 	
@@ -129,6 +128,7 @@ public class SchiffeVersenkenGUI extends JFrame {
 	private JComboBox comboBoxSpieler;
 	private String[] spieler = {"Spieler1", "Spieler2"};
 	private JButton setzenButton;
+	private JButton regelnButton;
 	
 	// Panel9 - Notizfeld2
 	private JPanel p9;
@@ -261,7 +261,7 @@ public class SchiffeVersenkenGUI extends JFrame {
 				p2.add(infoLabel);
 				
 				spielfeldTextArea = new JTextArea("\n   weißes Feld = leeres Feld \n\n   "
-						+ "Plus + = Schiff \n\n   Kreis O = Schuss auf leeres Feld \n\n   "
+						+ "Plus + = Schiff \n\n   Kreis O = Schuss auf leeres Feld/Wasser \n\n   "
 						+ "Kreuz X = Schuss hat Schiff getroffen \n\n   "
 						+ "Raute # = Schiff versenkt");
 				spielfeldTextArea.setBounds(30, 35, 300, 200);
@@ -287,11 +287,6 @@ public class SchiffeVersenkenGUI extends JFrame {
 				comboBoxSpieler.setBounds(340, 150, 115, 20);
 				p2.add(comboBoxSpieler);
 				comboBoxSpieler.setVisible(false);
-				
-				regelnButton = new JButton("Regeln");
-				regelnButton.setBounds(340, 195, 115, 40);
-				p2.add(regelnButton);
-				regelnButton.addActionListener(e -> regeln_anzeigen());
 				
 				//P3-Spielfeld2
 				p3.setBackground(Color.decode("#98EAE9"));
@@ -473,6 +468,11 @@ public class SchiffeVersenkenGUI extends JFrame {
 				p8.add(setzenButton);
 				setzenButton.addActionListener(e -> setzen());
 				
+				regelnButton = new JButton("Regeln");
+				regelnButton.setBounds(340, 190, 115, 40);
+				p8.add(regelnButton);
+				regelnButton.addActionListener(e -> regeln_anzeigen());
+				
 				//P9-Notizen2
 				p9.setBackground(Color.decode("#98EAE9"));
 				labeln2 = new JLabel("Notizen2:");
@@ -535,7 +535,7 @@ public class SchiffeVersenkenGUI extends JFrame {
 	 *****************************************************************/
 	
 			private void setzen() {		
-				if(!(spieler1.Spielerwechsel() || Debugmodus() == 0)) { //spieler1.Spielerwechsel() && debungging ->aus
+				if(!(spieler1.Spielerwechsel() || Debugmodus() == 0)) {
 					SchiffSpieler(spieler1,datenMatrixs1);
 					((AbstractTableModel) tabellespieler1.getModel()).fireTableDataChanged();
 				}
@@ -617,14 +617,14 @@ public class SchiffeVersenkenGUI extends JFrame {
 			
 			private void schuss() {
 				switch (werSpielt()) {
-				case 1:
+				case 0:
 					try {
 						SpielerSchuss(spieler2, datenMatrixs2, datenMatrixn1, tabellespieler2, tabellenotizen1);
 					} catch (Exception e) {
 						JOptionPane.showMessageDialog(this, e);
 					}
 					break;
-				case 0:
+				case 1:
 					try {
 						SpielerSchuss(spieler1, datenMatrixs1, datenMatrixn2, tabellespieler1, tabellenotizen2);
 					} catch (Exception e) {
@@ -641,11 +641,11 @@ public class SchiffeVersenkenGUI extends JFrame {
 				
 				if(spieler.setSchuss(Zelle)) {
 					werSpielt = werSpielt + 1;
-					//s1schuss();
+					//s1schuss
 					schuss(spieler, matrix1, matrix2, tabellespieler, tabellenotizen);
 					if(!debug) Ausgabe1();
 				} else {
-					//s1schuss();
+					//s1schuss
 					schuss(spieler, matrix1, matrix2, tabellespieler, tabellenotizen);
 					Ausgabe2();
 				}
