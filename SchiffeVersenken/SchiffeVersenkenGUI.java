@@ -282,9 +282,10 @@ public class SchiffeVersenkenGUI extends JFrame {
 				debug_modusAus.setBounds(340, 105, 115, 40);
 				p2.add(debug_modusAus);
 				debug_modusAus.addActionListener(e -> debugModusAus());
+				debug_modusAus.setEnabled(false);
 				
 				comboBoxSpieler = new JComboBox<String>(spieler);
-				comboBoxSpieler.setBounds(340, 150, 115, 20);
+				comboBoxSpieler.setBounds(340, 155, 115, 30);
 				p2.add(comboBoxSpieler);
 				comboBoxSpieler.setVisible(false);
 				
@@ -977,8 +978,10 @@ public class SchiffeVersenkenGUI extends JFrame {
 				JOptionPane.showMessageDialog(this, "Debug-Modus eingeschaltet.");
 				comboBoxSpieler.setVisible(true);
 				debug = true;
+				debug_modusAus.setEnabled(true);
 				schussButton.setEnabled(true);
 				eingabeschuss.setEnabled(true);
+				debug_modusAn.setEnabled(false);
 				linkerSchirmAus();
 				rechterSchirmAus();
 			}
@@ -987,6 +990,8 @@ public class SchiffeVersenkenGUI extends JFrame {
 				JOptionPane.showMessageDialog(this, "Debug-Modus ausgeschaltet.");
 				comboBoxSpieler.setVisible(false);
 				debug = false;
+				debug_modusAn.setEnabled(true);
+				debug_modusAus.setEnabled(false);
 				rechterSchirmAn();
 			}
 			
