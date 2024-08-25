@@ -536,7 +536,7 @@ public class SchiffeVersenkenGUI extends JFrame {
 	 *****************************************************************/
 	
 			private void setzen() {		
-				if(!(spieler1.Spielerwechsel() || Debugmodus() == 0)) {
+				if(!(spieler1.Spielerwechsel() || Debugmodus() == 1)) {
 					SchiffSpieler(spieler1,datenMatrixs1);
 					((AbstractTableModel) tabellespieler1.getModel()).fireTableDataChanged();
 				}
@@ -655,12 +655,14 @@ public class SchiffeVersenkenGUI extends JFrame {
 			private void Ausgabe1() {
 				switch (werSpielt%2) {
 				case 1:
-					JOptionPane.showMessageDialog(this, "Spielerwechsel: Spieler 2 ist dran.");
+					JOptionPane.showMessageDialog(this, "   Spielerwechsel: Spieler 2 ist dran.\n"
+							+ "   Bitte OK drücken und schnell weitergeben.");
 					rechterSchirmAus();
 					linkerSchirmAn();
 					break;
 				case 0:
-					JOptionPane.showMessageDialog(this, "Spielerwechsel: Spieler 1 ist dran.");
+					JOptionPane.showMessageDialog(this, "   Spielerwechsel: Spieler 1 ist dran.\n"
+							+ "   Bitte OK drücken und schnell weitergeben.");
 					rechterSchirmAn();
 					linkerSchirmAus();
 					break;
@@ -671,13 +673,13 @@ public class SchiffeVersenkenGUI extends JFrame {
 
 			private void Ausgabe2() {
 				switch (werSpielt%2) {
-				case 1:
+				case 0:
 					rechterSchirmAus();
 					JOptionPane.showMessageDialog(this, "   Spieler 1 hat gewonnen! \n   "
 							+ "Um erneut zu spielen schließen Sie die Anwendung \n   "
 							+ "und starten Sie es von neuem.");
 					break;
-				case 0:
+				case 1:
 					linkerSchirmAus();
 					JOptionPane.showMessageDialog(this, "   Spieler 2 hat gewonnen! \n   "
 							+ "Um erneut zu spielen schließen Sie die Anwendung \n   "
@@ -712,8 +714,8 @@ public class SchiffeVersenkenGUI extends JFrame {
 				String Spieler = comboBoxSpieler.getSelectedItem().toString();
 				if(debug) {
 					switch(Spieler) {
-					case "Spieler1": return 1;
-					case "Spieler2": return 0;
+					case "Spieler1": return 0;
+					case "Spieler2": return 1;
 					}
 				}
 				return 999999;
