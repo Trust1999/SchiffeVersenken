@@ -768,7 +768,13 @@ public class SchiffeVersenkenGUI extends JFrame {
 					schirm1.setEditable(false);
 					schirm1.setVisible(true);
 					
-					linkerSchirmMitteAn();
+					schirm2 = new JTextArea("\n\n       Spieler 2 ist dran");
+					schirm2.setBounds(getBounds(getBounds()));
+					schirm2.setBackground(Color.green);
+					schirm2.setFont(new Font("Arial", Font.PLAIN, 40));
+					p4.add(schirm2);
+					schirm2.setEditable(false);
+					schirm2.setVisible(true);
 					
 					schirm3 = new JTextArea("\n\n       Spieler 2 ist dran");
 					schirm3.setBounds(getBounds(getBounds()));
@@ -781,6 +787,8 @@ public class SchiffeVersenkenGUI extends JFrame {
 					//für das eigentliche zeichnen
 					p1.revalidate();
 					p1.repaint();
+					p4.revalidate();
+					p4.repaint();
 					p7.revalidate();
 					p7.repaint();
 				}
@@ -820,7 +828,8 @@ public class SchiffeVersenkenGUI extends JFrame {
 				p1.remove(schirm1);
 				System.out.println("[GUI] Schirm 1 aus");
 				
-				linkerSchirmMitteAus();
+				p4.remove(schirm2);
+				System.out.println("[GUI] Schirm 2 aus");
 				
 				p7.remove(schirm3);
 				System.out.println("[GUI] Schirm 3 aus");
@@ -828,28 +837,10 @@ public class SchiffeVersenkenGUI extends JFrame {
 				//für das eigentliche zeichnen
 				p1.revalidate();
 				p1.repaint();
+				p4.revalidate();
+				p4.repaint();
 				p7.revalidate();
 				p7.repaint();
-			}
-			
-			private void linkerSchirmMitteAn() {
-				schirm2 = new JTextArea("\n\n       Spieler 2 ist dran");
-				schirm2.setBounds(getBounds(getBounds()));
-				schirm2.setBackground(Color.green);
-				schirm2.setFont(new Font("Arial", Font.PLAIN, 40));
-				p4.add(schirm2);
-				schirm2.setEditable(false);
-				schirm2.setVisible(true);
-				
-				p4.revalidate();
-				p4.repaint();
-			}
-			
-			private void linkerSchirmMitteAus() {
-				p4.remove(schirm2);
-				System.out.println("[GUI] Schirm 2 aus");
-				p4.revalidate();
-				p4.repaint();
 			}
 			
 			private void rechterSchirmAn() {
@@ -892,7 +883,13 @@ public class SchiffeVersenkenGUI extends JFrame {
 					schirm4.setEditable(false);
 					schirm4.setVisible(true);
 					
-					rechterSchirmMitteAn();
+					schirm5 = new JTextArea("\n\n       Spieler 1 ist dran");
+					schirm5.setBounds(getBounds(getBounds()));
+					schirm5.setBackground(Color.green);
+					schirm5.setFont(new Font("Arial", Font.PLAIN, 40));
+					p6.add(schirm5);
+					schirm5.setEditable(false);
+					schirm5.setVisible(true);
 					
 					schirm6 = new JTextArea("\n\n       Spieler 1 ist dran");
 					schirm6.setBounds(getBounds(getBounds()));
@@ -905,6 +902,8 @@ public class SchiffeVersenkenGUI extends JFrame {
 					//für das eigentliche zeichnen
 					p3.revalidate();
 					p3.repaint();
+					p6.revalidate();
+					p6.repaint();
 					p9.revalidate();
 					p9.repaint();
 				}
@@ -944,7 +943,8 @@ public class SchiffeVersenkenGUI extends JFrame {
 				p3.remove(schirm4);
 				System.out.println("[GUI] Schirm 4 aus");
 					
-				rechterSchirmMitteAus();
+				p6.remove(schirm5);
+				System.out.println("[GUI] Schirm 5 aus");
 					
 				p9.remove(schirm6);
 				System.out.println("[GUI] Schirm 6 aus");
@@ -952,28 +952,10 @@ public class SchiffeVersenkenGUI extends JFrame {
 				//für das eigentliche zeichnen
 				p3.revalidate();
 				p3.repaint();
+				p6.revalidate();
+				p6.repaint();
 				p9.revalidate();
 				p9.repaint();
-			}
-			
-			private void rechterSchirmMitteAn() {
-				schirm5 = new JTextArea("\n\n       Spieler 1 ist dran");
-				schirm5.setBounds(getBounds(getBounds()));
-				schirm5.setBackground(Color.green);
-				schirm5.setFont(new Font("Arial", Font.PLAIN, 40));
-				p6.add(schirm5);
-				schirm5.setEditable(false);
-				schirm5.setVisible(true);
-				
-				p6.revalidate();
-				p6.repaint();
-			}
-			
-			private void rechterSchirmMitteAus() {
-				p6.remove(schirm5);
-				System.out.println("[GUI] Schirm 5 aus");
-				p6.revalidate();
-				p6.repaint();
 			}
 			
 			private void debugModusAn() {
