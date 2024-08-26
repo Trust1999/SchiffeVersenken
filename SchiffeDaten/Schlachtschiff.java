@@ -5,43 +5,39 @@ public class Schlachtschiff extends Schiffe{
 	protected static int anzahl = 1;
 	
     public Schlachtschiff() {
-    	//Schlachtschiff.anzahl = 1;
     	this.laenge = 5;
-    	this.position = 0;
+    	this.arrayPosition = 0;
     }
     
-
-    public Boolean getTreffer() {
+    public boolean getTreffer() {
         return treffer;
     }
+ 
     public void setTreffer() {
-        this.treffer = true;
-        this.anzTreffer++;
-        mengeSchiffe--;
-    }
-    public Boolean getVersenkt() {
-        return versenkt;
-    }
-    public void setVersenkt() {
-        this.versenkt = versenkt;
-    }
-
+		treffer = true;
+	}
+    
     public int getLaenge() {
         return laenge;
     }
-    public int getAnzahl() {
-        return anzahl;
-    }
-    public void setAnzahl() {
-        anzahl--;
-        System.out.println("[Schlachtschiff] Anzahl: " + Schlachtschiff.anzahl);
-    }
     
-    protected int getMengeSchiffe() {
-		return mengeSchiffe;
+	public int[] getRichtung() {
+		return richtung;
 	}
+	
+	public void setRichtung(int[] ausrichtung) {
+		this.richtung = ausrichtung;
+	}
+	
+    public int getAnzTreffer() {
+        return anzTreffer;
+    }
     
-    protected int getPosition() {
-		return position;
+    public void setAnzTreffer() {
+    	this.anzTreffer++;
+    }
+    
+    public int getArrayPosition() {
+		return arrayPosition;
 	}
 }

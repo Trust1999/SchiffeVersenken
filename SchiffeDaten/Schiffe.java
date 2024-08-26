@@ -2,19 +2,20 @@ package SchiffeDaten;
 
 public abstract class Schiffe extends Felder {
 
-    //protected static int anzahl;
     protected int laenge;
-    protected int mengeSchiffe = 5 + 8 + 9 + 8; //erstmal tote Leiche
-    protected int position;
+    protected int[] richtung = new int[1];
+    protected int arrayPosition;
 	protected int anzTreffer = 0;
-	//protected boolean versenkt = versenkungCheck();
+	//protected boolean versenkt;
     
-	protected abstract int getAnzahl();
-	protected abstract int getLaenge();
-	protected abstract void setAnzahl();
-	protected abstract int getMengeSchiffe();
-	/*protected abstract boolean versenkungCheck() {
-		return (anzTreffer == laenge);
-	}*/
-	protected abstract int getPosition();
+	public abstract int getLaenge();
+	public abstract int[] getRichtung();
+	public abstract void setRichtung(int[] ausrichtung);
+	
+	public abstract int getArrayPosition();
+	
+	public abstract int getAnzTreffer();
+	public abstract void setAnzTreffer();
+	
+	//public abstract void setVersenkt(boolean b);
 }

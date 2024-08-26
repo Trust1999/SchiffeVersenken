@@ -6,40 +6,38 @@ public class Zerstoerer extends Schiffe{
 	
 	public Zerstoerer() {
 	    this.laenge = 3;
-	    this.position = 2;
+	    this.arrayPosition = 2;
 	}
-    
-
-    public Boolean getTreffer() {
+	 
+    public boolean getTreffer() {
         return treffer;
     }
+ 
     public void setTreffer() {
-        this.treffer = true;
-        this.anzTreffer++;
-        mengeSchiffe--;
-    }
-    public Boolean getVersenkt() {
-        return versenkt;
-    }
-    public void setVersenkt() {
-        this.versenkt = versenkt;
-    }
-
+		treffer = true;
+	}
+    
     public int getLaenge() {
         return laenge;
     }
-    public int getAnzahl() {
-        return anzahl;
-    }
-    public void setAnzahl() {
-        anzahl--;
-    }
     
-    protected int getMengeSchiffe() {
-		return mengeSchiffe;
+	public int[] getRichtung() {
+		return richtung;
 	}
+	
+	public void setRichtung(int[] ausrichtung) {
+		this.richtung = ausrichtung;
+	}
+	
+    public int getAnzTreffer() {
+        return anzTreffer;
+    }
     
-    protected int getPosition() {
-		return position;
+    public void setAnzTreffer() {
+    	this.anzTreffer++;
+    }
+    
+    public int getArrayPosition() {
+		return arrayPosition;
 	}
 }
