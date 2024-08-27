@@ -530,7 +530,7 @@ public class SchiffeVersenkenGUI extends JFrame {
 	 *****************************************************************/
 	
 			private void setzen() {		
-				if(!(spieler1.Spielerwechsel() || Debugmodus() == 1)) {
+				if(!(spieler1.spielerwechsel() || Debugmodus() == 1)) {
 					SchiffSpieler(spieler1,datenMatrixs1);
 					((AbstractTableModel) tabellespieler1.getModel()).fireTableDataChanged();
 				}
@@ -570,7 +570,7 @@ public class SchiffeVersenkenGUI extends JFrame {
 			}
 			
 			private void Schirmwechsel1() {
-				if(spieler1.Spielerwechsel() && anzahl == 0) {
+				if(spieler1.spielerwechsel() && anzahl == 0) {
 					anzahl += 1;
 					setzenButton.setEnabled(false);
 					Timer timer = new Timer(1000, ex -> {
@@ -585,7 +585,7 @@ public class SchiffeVersenkenGUI extends JFrame {
 			}
 			
 			private void Schirmwechsel2() {
-				if(spieler2.Spielerwechsel()) {
+				if(spieler2.spielerwechsel()) {
 					rechterSchirmAn();
 					setzenButton.setEnabled(false);
 					eingabesetzen.setEnabled(false);
