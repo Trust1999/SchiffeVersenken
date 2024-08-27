@@ -2,27 +2,40 @@ package SchiffeDaten;
 
 import java.util.Scanner;
 
+
+/**
+ * @brief Verwaltet die Daten für das Schiffs-Spiel, einschließlich des Spielfelds
+ * 		  und der Schiffe.
+ * 
+ * Diese Klasse ist für die Verwaltung des Spielfelds sowie für das Platzieren und 
+ * Verfolgen von Schiffen verantwortlich. Sie bietet Methoden zum Setzen von
+ * Schiffen, Überprüfen von Schüssen, Überprüfen des Spielstatus und Spielerwechsel.
+ * 
+ * @since 18.08.2024
+ * @lastModified 27.08.2024
+ * @author Anton Unger
+ */
 public class SchiffeData {
 
 	private Felder[][] SpielFeld;
 	
-	/*Gibt an wie viele Schiffe pro Type erzeugt werden können
-	 * AnzahlSchiffe[0] -> Schlachtschiff
-	 * AnzahlSchiffe[1] -> Kreuzer
-	 * AnzahlSchiffe[2] -> Zerstörer
-	 * AnzahlSchiffe[3] -> U-Boot
-	 */
 	private int[] AnzahlSchiffe = new int[3];
-	//Gesamtzahl der Gesetzten Schiffsfelder
 	private int mSchiff;
 	
-	
 	/**
-	 * @brief Konstruktor der Klasse SchiffeDaten
+	 * @brief Konstruktor der Klasse SchiffeData.
 	 * 
-	 * Das 10x10 Spielfeld wird mit dem Obekt FreiesFeld gefühlt
+	 * Dieser Konstruktor initialisiert ein 10x10 Spielfeld, wobei jedes Feld 
+	 * mit einem Objekt vom Typ 'FreiesFeld' gefüllt wird. Dies stellt sicher, 
+	 * dass das gesamte Spielfeld zu Beginn des Spiels leer ist.
+	 * 
+	 * Zusätzlich wird der Zähler für gesetzte Schiffe (mSchiff) auf 0 gesetzt 
+	 * und die Anzahl der verfügbaren Schiffe für jeden Schiffstyp (Schlachtschiff, 
+	 * Kreuzer, Zerstörer, U-Boot) wird in einem Array initialisiert, in dieser 
+	 * Reihenfolge. 
 	 * 
 	 * @since 11.08.2024
+	 * @lastModified 26.08.2024
 	 * @author Anton Unger
 	 */
 	public SchiffeData() {
@@ -34,7 +47,7 @@ public class SchiffeData {
 			}
 		}
 		mSchiff = 0;
-		AnzahlSchiffe = new int[]{1, 1, 1, 1};
+		AnzahlSchiffe = new int[]{1, 2, 3, 4};
 	}
 	
 	/**
@@ -58,24 +71,25 @@ public class SchiffeData {
 	 * @param Zelle Das Startfeld, auf dem das Schiff platziert werden soll, in 
 	 * 		  		String-Form (z.B. "A5" für Spalte A und Zeile 5).
 	 * 
-	 * @throws Exception Wird geworfen, wenn das ausgewählte Schiff nicht mehr 
-	 *                   verfügbar ist, da bereits alle Exemplare dieses Typs 
-	 *                   platziert wurden.
+	 * @throws Error Wird geworfen, wenn das ausgewählte Schiff nicht mehr 
+	 *               verfügbar ist, da bereits alle Exemplare dieses Typs 
+	 *               platziert wurden.
 	 * 
 	 * @since 11.08.2024
+	 * @lastModified 21.08.2024
 	 * @author Anton Unger
 	 */
 	public void setSchiff(String Schiff, String Richtung, String Zelle) throws Error {
-		Schiffe schiff = SchiffType(Schiff);
-		int[] richungsMatrix = RichtungToInt(Richtung);
-		int[] feldInt = ZelleToInt(Zelle);
+		Schiffe schiff = schiffType(Schiff);
+		int[] richungsMatrix = richtungToInt(Richtung);
+		int[] feldInt = zelleToInt(Zelle);
 		
-		if(FreieFelder(schiff, richungsMatrix, feldInt )) {
+		if(freieFelder(schiff, richungsMatrix, feldInt )) {
 			if( AnzahlSchiffe[schiff.getArrayPosition()] <= 0) {
 				System.out.println("[Data] Schiff nicht mehr vorhanden");
 				throw new Error("kein Schiff mehr frei");
 			}
-			SchiffSetzen(Schiff, schiff, richungsMatrix, feldInt);
+			schiffSetzen(Schiff, schiff, richungsMatrix, feldInt);
 		}
 	}
 	
@@ -93,15 +107,17 @@ public class SchiffeData {
 	 *          (z.B. "Schlachtschiff (5 Kästchen) [1 Stück]").
 	 * @return Ein Objekt der Klasse 'Schiffe', das dem ausgewählten Schiff
 	 * 		   entspricht, oder 'null', falls der Schiffstyp unbekannt ist.
-	 * @throws Exception Wird geworfen, wenn übergebener String falsch ist.
+	 * 
+	 * @throws Error Wird geworfen, wenn übergebener String falsch ist.
 	 * 
 	 * @pre Ein Schiff soll ins Spielfeld gesetzt werden.
 	 * @post Ein Schiffsobejekt wird erzeugt.
 	 *         
 	 * @since 11.08.2024
+	 * @lastModified 21.08.2024
 	 * @author Anton Unger
 	 */
-	private Schiffe SchiffType(String s) throws Error {
+	private Schiffe schiffType(String s) throws Error {
 		switch(s) {
 		case "Schlachtschiff (5 Kästchen) [1 Stück]": 
 			System.out.println("[Data] Schlachtschiff wird erstellt");
@@ -140,6 +156,7 @@ public class SchiffeData {
 	 * 				   "Süden", "Westen").
 	 * @return Ein Integer-Array, das die Richtung auf dem Spielfeld 
 	 * 		   beschreibt.
+	 * 
 	 * @throws Error Wird geworfen, wenn eine ungültige Himmelsrichtung
 	 * 				 übergeben wird.
 	 * 
@@ -148,18 +165,19 @@ public class SchiffeData {
 	 * 		 Richtungsmatrix beschreibt.
 	 * 
 	 * @since 11.08.2024
+	 * @lastModified 21.08.2024
 	 * @author Anton Unger
 	 */
-	private int[] RichtungToInt(String richtung) throws Error {
+	private int[] richtungToInt(String richtung) throws Error {
 		switch (richtung) {
 	        case "Norden": 
-	        	System.out.println("[Data] Richtungsmatrix Norden: {1, 0}");
+	        	System.out.println("[Data] Richtungsmatrix Norden: {-1, 0}");
 	        	return new int[]{-1, 0};
 	        case "Osten": 
 	        	System.out.println("[Data] Richtungsmatrix Osten: {0, 1}");
 	        	return new int[]{0, 1};
 	        case "Süden": 
-	        	System.out.println("[Data] Richtungsmatrix Süden: {-1, 0}");
+	        	System.out.println("[Data] Richtungsmatrix Süden: {1, 0}");
 	        	return new int[]{1, 0};
 	        case "Westen": 
 	        	System.out.println("[Data] Richtungsmatrix Westen: {0, -1}");
@@ -171,18 +189,33 @@ public class SchiffeData {
 	}
 	
 	/**
+	 * @brief Wandelt die Spielfeldkoordinate von String- in Integer-Form um.
 	 * 
-	 * @param f
-	 * @return
-	 * @throws Exception
+	 * Diese Methode nimmt eine Spielfeldkoordinate in String-Form (z.B. "A5") 
+	 * und konvertiert sie in ein Integer-Array, das die Position auf dem Spielfeld 
+	 * angibt. Der Buchstabe (A-J) steht dabei für die Spalte und die Zahl (1-10) 
+	 * für die Zeile. Die Rückgabe erfolgt in einem Array, in dem die erste 
+	 * Position die Zeile und die zweite Position die Spalte repräsentiert.
 	 * 
-	 * @pre
-	 * @post
+	 * Es werden nur Eingaben im Bereich "A1" bis "J10" akzeptiert. Bei einer 
+	 * ungültigen Eingabe wird ein 'Error' geworfen.
 	 * 
-	 * @since
+	 * @param f Der String, der die Zelle repräsentiert, im Format [A-J][1-10].
+	 * @return Ein Integer-Array, in dem die erste Position die Zeile und die zweite 
+	 *         Position die Spalte repräsentiert.
+	 * 
+	 * @throws Error Wird geworfen, wenn die Eingabe ungültig ist (d.h. sie liegt 
+	 *               außerhalb des erlaubten Bereichs "A1" bis "J10").
+	 * 
+	 * @pre Der Spieler möchte ein Schiff setzten
+	 * @post Gibt ein Integer-Array zurück, das die Position des Feldes in
+	 * 		 numerischer Form beschreibt.
+	 * 
+	 * @since 11.08.2024
+	 * @lastModified 22.08.2024
 	 * @author Anton Unger
 	 */
-	private int[] ZelleToInt(String f) throws Error {
+	private int[] zelleToInt(String f) throws Error {
 		System.out.println("[Data] Umwandlung " + f + " in Int");
 		int[] zelle = {0,0};
 		
@@ -196,16 +229,50 @@ public class SchiffeData {
 	         zelle[0] = Integer.parseInt(eingabe.substring(1)) - 1;
 	            
 	         System.out.println("[Data] " + zelle[1] + " " + zelle[0]);
+	         scanner.close();
 	     } else {
 	         System.out.println("[Data] Ungültige Eingabe");
+	         scanner.close();
 	         throw new Error("Ungültige Eingabe! Bitte geben Sie ein Feld im Format A-J und 1-10 ein.");
 	     }
-	        
-	     scanner.close();
 	     return zelle;
 	}
 	
-	private boolean FreieFelder(Schiffe schiff, int[] r, int[] f) throws Error {
+	/**
+	 * @brief Überprüft, ob die Felder für das Schiff frei sind und auf dem 
+	 * 		  Spielfeld liegen.
+	 * 
+	 * Diese Methode prüft, ob die Felder, auf denen ein Schiff platziert werden
+	 * soll, frei sind und sich innerhalb der Grenzen des Spielfelds (10x10)
+	 * befinden. Dabei wird die Länge des Schiffes berücksichtigt und in der 
+	 * angegebenen Richtung überprüft, ob alle benötigten Felder frei sind (d.h.,
+	 * noch nicht von einem anderen Schiff belegt). 
+	 * 
+	 * Wenn eines der Felder außerhalb des Spielfelds liegt oder belegt ist, wird
+	 * ein 'Error' geworfen.
+	 * 
+	 * @param schiff Das Schiffsobjekt, das platziert werden soll.
+	 * @param r Ein Integer-Array, das die Bewegungsrichtung des Schiffes angibt 
+	 *          (z.B. [1, 0] für eine Richtung nach Süden)
+	 * @param f Ein Integer-Array, das die Startkoordinate auf dem Spielfeld angibt 
+	 *          im Format [Zeile][Spalte]
+	 * @return Gibt 'true' zurück, wenn alle Felder für das Schiff frei sind und 
+	 * 		   sich innerhalb der Grenzen des Spielfelds befinden.
+	 * 
+	 * @throws Error Wird geworfen, wenn das Schiff außerhalb des Spielfelds
+	 * 		   platziert werden soll oder eines der benötigten Felder bereits
+	 * 		   belegt ist durch ein Schiff und ein Belegtes Feld.
+	 * 
+	 * @pre Der Spieler möchte ein Schiff platzieren
+	 * @post Gibt 'true' zurück, wenn alle Felder für das Schiff erfolgreich
+	 * 		 überprüft wurden und frei sind. Sonst erhält der Spieler einen Fehler
+	 * 		 und das Schiff wird nicht platziert.
+	 * 
+	 * @since 11.08.2024
+	 * @lastModified 27.08.2024
+	 * @author Anton Unger
+	 */
+	private boolean freieFelder(Schiffe schiff, int[] r, int[] f) throws Error {
 		int zeile = f[0];
 		int spalte = f[1];
 		
@@ -216,8 +283,8 @@ public class SchiffeData {
 			}
 			
 			if(!(SpielFeld[zeile][spalte] instanceof FreiesFeld)) {
-				System.out.println("[Data] Feld "+ zeile + spalte + " ist belegt");
-				throw new Error("Feld ist belegt");
+				System.out.println("[Data] Feld "+ zeile + " " + spalte + " ist belegt");
+				throw new Error("Feld " + zeile + " " + spalte + " ist belegt\"");
 			}
 			zeile = zeile + r[0];
 			spalte = spalte + r[1];			
@@ -227,14 +294,44 @@ public class SchiffeData {
 		return true;
 	}
 	
-	private void SchiffSetzen(String schiffsTyp, Schiffe schiff, int[] r, int[] f)
-			throws Error {
+	/**
+	 * @brief Platziert ein Schiff auf dem Spielfeld.
+	 * 
+	 * Diese Methode setzt ein Schiff vom angegebenen Typ auf das Spielfeld. 
+	 * Das Schiff wird in der Richtung, die durch das Richtungs-Array 'r'
+	 * bestimmt wird, und ab der Startkoordinate 'f' platziert. Jedes Segment des 
+	 * Schiffs wird auf dem Spielfeld in der entsprechenden Zelle gesetzt. Zudem 
+	 * wird die Richtung für das Schiff gespeichert und das Spielfeld um das 
+	 * Schiff herum entsprechend mit BelegtFeldern markiert.
+	 * 
+	 * Am Ende der Platzierung wird die Anzahl der verfügbaren Schiffe des 
+	 * entsprechenden Typs reduziert, und die Anzahl der gesetzten Schiffsfelder
+	 * wird aktualisiert.
+	 * 
+	 * @param schiffsTyp Der Name des Schiffs, das gesetzt werden soll.
+	 * @param schiff Das Schiffsobjekt, das die Eigenschaften des zu platzierenden 
+	 * 				 Schiffs enthält.
+	 * @param r Ein Integer-Array, das die Richtung des Schiffs angibt 
+	 *          (z.B. [1, 0] für eine Bewegung nach Süden)
+	 * @param f Ein Integer-Array, das die Startkoordinate auf dem Spielfeld angibt 
+	 *          im Format [Zeile][Spalte]
+	 * 
+	 * @pre Das Spielfeld muss ausreichend freie Felder in der angegebenen Richtung 
+	 * 		haben.
+	 * @post Das Schiff wird auf dem Spielfeld platziert, die Anzahl der verfügbaren Schiffe wird reduziert,
+	 *       und die Anzahl der belegten Schiffsfelder wird aktualisiert.
+	 * 
+	 * @lastModified 21.08.2024
+	 * @since 11.08.2024
+	 * @author Anton Unger
+	 */
+	private void schiffSetzen(String schiffsTyp, Schiffe schiff, int[] r, int[] f){
 		int zeile = f[0];
 		int spalte = f[1];
 		
 		for(int i = 1; i <= schiff.getLaenge(); i++) {
-			SpielFeld[zeile][spalte] = SchiffType(schiffsTyp);
-			DummyFelder(zeile, spalte);
+			SpielFeld[zeile][spalte] = schiffType(schiffsTyp);
+			dummyFelder(zeile, spalte);
 			((Schiffe) SpielFeld[zeile][spalte]).setRichtung(r);
 			System.out.println("[Data] Schiffteil " + zeile +" " + spalte);
 			zeile = zeile + r[0];
@@ -247,8 +344,40 @@ public class SchiffeData {
 		AnzahlSchiffe[schiff.getArrayPosition()]--;
 	}
 
-	private void DummyFelder(int zeile, int spalte) {
-		if((zeile-1 >= 0) && SpielFeld[zeile-1][spalte] instanceof FreiesFeld) {
+	/**
+	 * @brief Setzt Dummy-Felder um ein Schiff herum.
+	 * 
+	 * Diese Methode setzt Felder um das Schiff herum auf, um zu verhindern, dass 
+	 * ein weiteres Schiff direkt neben einem bereits platzierten Schiff gesetzt
+	 * wird.Dabei wird für jedes angrenzende Feld überprüft, ob es sich im Spielfeld
+	 * befindet und ob es ein freies Feld ist. Ist dies der Fall, wird das Feld in 
+	 * ein Belegtes Feld umgewandelt.
+	 * 
+	 * @param zeile Die Zeile der aktuellen Position des Schiffssegments.
+	 * @param spalte Die Spalte der aktuellen Position des Schiffssegments.
+	 * 
+	 * @pre Das Schiff wird auf das Spielfeld gestzt.
+	 * @post Die angrenzenden Felder um das Schiff werden auf "belegt" gesetzt, 
+	 * 		 sofern sie frei sind.
+	 * 
+	 * @lastModified 27.08.2024
+	 * @since 11.08.2024
+	 * @author Anton Unger
+	 */
+	private void dummyFelder(int zeile, int spalte) {
+	    int[][] richtungen = { {-1, 0}, {1, 0}, {0, -1}, {0, 1} };
+
+	    for (int[] richtung : richtungen) {
+	        int neueZeile = zeile + richtung[0];
+	        int neueSpalte = spalte + richtung[1];
+	        
+	        if (neueZeile >= 0 && neueZeile <= 9 && neueSpalte >= 0 && neueSpalte <= 9 
+	            && SpielFeld[neueZeile][neueSpalte] instanceof FreiesFeld) {
+	            SpielFeld[neueZeile][neueSpalte] = new BelegtesFeld();
+	            System.out.println("[Data] DummyFeld gesetzt: " + neueZeile + " " + neueSpalte);
+	        }
+	    }
+		/*if((zeile-1 >= 0) && SpielFeld[zeile-1][spalte] instanceof FreiesFeld) {
 			SpielFeld[zeile-1][spalte] = new BelegtesFeld();
 			System.out.println("[Data] DummyFeld gesetzt: " + (zeile-1) + " " + spalte);
 		}
@@ -263,25 +392,91 @@ public class SchiffeData {
 		if((spalte+1 <= 9) && SpielFeld[zeile][spalte+1] instanceof FreiesFeld) {
 			SpielFeld[zeile][spalte+1] = new BelegtesFeld();
 			System.out.println("[Data] DummyFeld gesetzt: " + zeile + " " + (spalte+1));
-		}
+		}*/
 	}
 
+	/**
+	 * @brief Überprüft, ob sich an der angegebenen Position ein Schiff befindet.
+	 * 
+	 * Diese Methode überprüft, ob das Feld an der angegebenen Position (Zeile und 
+	 * Spalte) ein Schiffsobjekt enthält. Das Ergebnis wird als boolean-Wert
+	 * zurückgegeben, wobei 'true' bedeutet, dass an der Position ein Schiff ist, 
+	 * und 'false', dass es kein Schiff ist.
+	 * 
+	 * @param zeile Die Zeile der zu überprüfenden Position auf dem Spielfeld.
+	 * @param spalte Die Spalte der zu überprüfenden Position auf dem Spielfeld.
+	 * @return Gibt `true` zurück, wenn sich an der angegebenen Position ein 
+	 * 		   Schiff befindet, andernfalls `false`.
+	 * 
+	 * @pre GUI aktuallisiert Anzeige.
+	 * @post Gibt das Ergebnis der Überprüfung zurück, ob an der angegebenen 
+	 * 		 Position ein Schiff liegt.
+	 * 
+	 * @lastModified 11.08.2024
+	 * @since 11.08.2024
+	 * @author Anton Unger
+	 */
 	public boolean getType(int zeile, int spalte) {
 		boolean schiff = SpielFeld[zeile][spalte] instanceof Schiffe;
 		System.out.println("[Data] Schiffsfeld " + zeile + " " + spalte + ": " + schiff);
 		return schiff;
 	}
 	
+	/**
+	 * @brief Überprüft, ob ein Feld getroffen wurde.
+	 * 
+	 * Diese Methode überprüft, ob das Feld an der angegebenen Position (Zeile und
+	 * Spalte) bereits getroffen wurde. Das Ergebnis wird als boolean-Wert 
+	 * zurückgegeben, wobei 'true' bedeutet, dass das Feld getroffen wurde, und 
+	 * 'false', dass es nicht getroffen wurde.
+	 * 
+	 * @param zeile Die Zeile der zu überprüfenden Position auf dem Spielfeld.
+	 * @param spalte Die Spalte der zu überprüfenden Position auf dem Spielfeld.
+	 * @return Gibt 'true' zurück, wenn das Feld bereits getroffen wurde, 
+	 * 		   andernfalls 'false'.
+	 * 
+	 * @pre GUI aktuallisiert Anzeige.
+	 * @post Gibt den Trefferstatus des Feldes zurück.
+	 * 
+	 * @lastModified 11.08.2024
+	 * @since 11.08.2024
+	 * @author Anton Unger
+	 */
 	public boolean getStatus(int zeile, int spalte) {
 		boolean treffer = SpielFeld[zeile][spalte].getTreffer();
 		System.out.println("[Data] Treffer Feld " + zeile + " " + spalte + ": " + treffer);
 		return treffer; 
 	}
 	
+	/**
+	 * @brief Setzt einen Schuss auf das angegebene Feld und überprüft das Ergebnis.
+	 * 
+	 * Diese Methode registriert einen Schuss auf das angegebene Feld. Sie prüft, ob
+	 * das Feld bereits getroffen wurde, und wenn nicht, wird der Trefferstatus des
+	 * Feldes aktualisiert. Wenn das Feld ein Schiffsobjekt enthält, wird zusätzlich
+	 * überprüft, ob das Schiff versenkt wurde. Die Anzahl der Schiffe wird 
+	 * reduziert, und es wird überprüft, ob das Spiel endet.
+	 * 
+	 * @param zelle Die Koordinate des Feldes, auf das der Schuss abgegeben wird,
+	 * 		  im Format "A-J1-10".
+	 * @return Gibt 'true' zurück, wenn der Schuss erfolgreich gesetzt wurde und das
+	 * 		   Spiel weitergeht, andernfalls 'false', wenn das Spiel endet.
+	 * 
+	 * @throws Error Wird geworfen, wenn das Feld bereits getroffen wurde.
+	 * 
+	 * @pre Spieler gibt schuss auf ein Feld ab.
+	 * @post Der Trefferstatus des Feldes wird aktualisiert, und wenn ein Schiff
+	 * 		 getroffen wird, wird überprüft, ob es versenkt wurde und ob das Spiel
+	 * 		 endet.
+	 * 
+	 * @lastModified 26.08.2024
+	 * @since 11.08.2024
+	 * @author Anton Unger
+	 */
 	public boolean setSchuss(String zelle) throws Error {
 		System.out.println("[Data] Setze schuss auf " + zelle);
 		
-		int[] feldInt = ZelleToInt(zelle);
+		int[] feldInt = zelleToInt(zelle);
 		int zeile = feldInt[0];
 		int spalte = feldInt[1];
 		
@@ -298,7 +493,7 @@ public class SchiffeData {
 			erhoeheTrefferCount(zeile, spalte);			
 			//setVersenkt(zeile, spalte);
 			mSchiff--;
-			return Spielend(zeile, spalte);	
+			return spielend();	
 		}
 		return true;
 	}
@@ -368,7 +563,26 @@ public class SchiffeData {
 	}
 	*/
 
-	private boolean Spielend(int zeile, int spalte) {
+	/**
+	 * @brief Überprüft, ob das Spiel beendet ist.
+	 * 
+	 * Diese Methode prüft, ob noch Schiffe auf dem Spielfeld vorhanden sind. Wenn 
+	 * keine Schiffe mehr übrig sind ('mSchiff' ist 0), wird das Spiel als beendet 
+	 * betrachtet und 'false' zurückgegeben. Andernfalls wird das Spiel fortgesetzt
+	 * und 'true' zurückgegeben.
+	 * 
+	 * @return Gibt 'false' zurück, wenn das Spiel beendet ist (keine Schiffe mehr 
+	 * 		   vorhanden), andernfalls 'true', wenn das Spiel fortgesetzt werden 
+	 * 		   kann.
+	 * 
+	 * @pre Der Spieler hat ein erfolgreich ein Schiff getroffen
+	 * @post Gibt den Status des Spiels zurück (beendet oder fortlaufend).
+	 * 
+	 * @lastModified 28.08.2024
+	 * @since 11.08.2024
+	 * @author Anton Unger
+	 */
+	private boolean spielend() {
 		System.out.println("[Data] Noch vorhandene Schiffe: " + mSchiff);
 		if(mSchiff == 0) {
 			System.out.println("[Data] Spielende");
@@ -380,7 +594,27 @@ public class SchiffeData {
 		}	
 	}
 	
-	public boolean Spielerwechsel() {
+	/**
+	 * @brief Überprüft, ob ein Spielerwechsel erforderlich ist.
+	 * 
+	 * Diese Methode prüft, ob alle Schiffe des aktuellen Spielers platziert wurden. 
+	 * Dies wird ermittelt, indem die Anzahl der verbleibenden Schiffe für jeden 
+	 * Schiffstyp summiert wird. Wenn keine Schiffe mehr übrig sind (`aSchiffe` ist 
+	 * 0), wird 'true' zurückgegeben, was darauf hinweist, dass ein Spielerwechsel 
+	 * stattfinden sollte. Andernfalls wird 'false' zurückgegeben, und der aktuelle
+	 * Spieler kann weitermachen.
+	 * 
+	 * @return Gibt 'true' zurück, wenn ein Spielerwechsel erforderlich ist 
+	 * 		   (alle Schiffe sind platziert), andernfalls 'false'.
+	 * 
+	 * @pre Der aktuelle Spieler soll ein Schiff setzen
+	 * @post Gibt zurück, ob ein Spielerwechsel notwendig ist.
+	 * 
+	 * @lastModified 27.08.2024
+	 * @since 11.08.2024
+	 * @author Anton Unger
+	 */
+	public boolean spielerwechsel() {
 		int aSchiffe = AnzahlSchiffe[0] + AnzahlSchiffe[1] + AnzahlSchiffe[2]
 						+ AnzahlSchiffe[3];
 		if(aSchiffe == 0) {	
