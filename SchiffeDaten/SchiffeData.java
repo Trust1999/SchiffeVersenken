@@ -463,8 +463,8 @@ public class SchiffeData {
 		System.out.println("[Data] Setze schuss auf " + zelle);
 		
 		int[] feldInt = zelleToInt(zelle);
-		int zeile = feldInt[1];
-		int spalte = feldInt[0];
+		int zeile = feldInt[0];
+		int spalte = feldInt[1];
 		
 		if(SpielFeld[zeile][spalte].getTreffer()) {
 			System.out.println("[Data] Feld schon getroffen");
