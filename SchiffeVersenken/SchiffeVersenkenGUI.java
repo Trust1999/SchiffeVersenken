@@ -870,6 +870,7 @@ public class SchiffeVersenkenGUI extends JFrame {
 					+ "   Bitte OK drücken und schnell weitergeben.");
 			rechterSchirmAn();
 			schussButton.setEnabled(false);
+			eingabeschuss.setText("");
 			Timer timer1 = new Timer(1500, ex -> {
 				linkerSchirmAus();
 				schussButton.setEnabled(true);
@@ -882,6 +883,7 @@ public class SchiffeVersenkenGUI extends JFrame {
 					+ "   Bitte OK drücken und schnell weitergeben.");
 			linkerSchirmAn();
 			schussButton.setEnabled(false);
+			eingabeschuss.setText("");
 			Timer timer2 = new Timer(1500, ex -> {
 				rechterSchirmAus();
 				schussButton.setEnabled(true);
