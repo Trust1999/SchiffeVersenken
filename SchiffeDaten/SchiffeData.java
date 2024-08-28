@@ -477,7 +477,6 @@ public class SchiffeData {
 		if(SpielFeld[zeile][spalte] instanceof Schiffe) {
 			System.out.println("[Data] VersenkungsTest startet!");
 			erhoeheTrefferCount(zeile, spalte);			
-			//setVersenkt(zeile, spalte);
 			mSchiff--;
 			return spielend();	
 		}
