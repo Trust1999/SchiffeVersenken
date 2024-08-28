@@ -1,11 +1,11 @@
 package SchiffeDaten;
 
+//TODO
 public abstract class Felder {
 
-	protected Boolean treffer = false;
-	protected Boolean versenkt = false;
+	protected boolean treffer = false;
+	protected boolean versenkt = false;
 	
-	protected abstract void setTreffer();
-	protected abstract Boolean getTreffer();
-	protected abstract Boolean getVersenkt();
+	public abstract void setTreffer();
+	public abstract boolean getTreffer();
 }
