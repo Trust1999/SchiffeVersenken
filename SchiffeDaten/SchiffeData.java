@@ -498,6 +498,33 @@ public class SchiffeData {
 		return true;
 	}
 	
+	/**
+	 * @brief Erhöht den Counter für die Treffer eines kompletten Schiffs (also alle einzelnen Schiffsteile)
+	 * 
+	 *         Mit Hilfe der Erkenntnis, dass ein Schiff immer nur eine Breite von 1 Feld hat und beim Treffen
+	 *        eines Schiffsteils der Treffercount für alle Teile des jeweiligen Schiffs erhöht werden soll,
+	 *        werde zuerst in SChiffsrichtung alle Schiffsteile um einen Treffer erhöht, bis das Ende des Schiffs
+	 *        erreicht ist; und dann ausgehend vom getroffenen Feld in die entgegengesetzte Richtung des Schiffs
+	 *        alle restlichen Teile um einen Treffercount nach oben gesetzt (siehe versenkungsTestSchleife()).
+	 *         Das Ende des Schiffs wird bestimmt, indem entweder ein leeres Feld aufgerufen wird - somit die
+	 *        Schleife verlassen wird, oder aber (z.B. wenn ein Schiff am Rande des Spielfelds platziert ist)
+	 *        es kommt zu einem Fehler, wenn das Spielfeld bei einem Aufruf verlassen wird. Dieser Fehler wird
+	 *        dann durch den try-catch-Block abgefangen.
+	 *        
+	 *         Somit kann danach ermittelt werden, ob alle Teile eines SChiffs getroffen wurden.
+	 * 
+	 * @param zeile Die Zeile der zu überprüfenden Position auf dem Spielfeld.
+	 * @param spalte Die Spalte der zu überprüfenden Position auf dem Spielfeld.
+	 * @return ---
+	 * 
+	 * @pre Ein Schiff wurde getroffen.
+	 * @post Es wird überprüft, ob es versenkt wurde und ob das Spiel
+	 * 		 endet.
+	 * 
+	 * @lastModified 26.08.2024
+	 * @since 21.08.2024
+	 * @author Johannes Schönwälder, Anton Unger
+	 */	
 	private void erhoeheTrefferCount(int zeile, int spalte) {
 		int zeilenRichtung = ((Schiffe) SpielFeld[zeile][spalte]).getRichtung()[0];
 		int spaltenRichtung = ((Schiffe) SpielFeld[zeile][spalte]).getRichtung()[1];
@@ -514,7 +541,27 @@ public class SchiffeData {
 			System.out.println("[Data] Ende des Spielfeldes erreicht");
 		}
 	}
-
+	
+	/**
+	 * @brief Erhöht den Counter für die Treffer jeweils Schiffsteile
+	 * 
+	 *		   Es werden für die gewünschte Richtung die jeweiligen Schiffsteile um einen Treffer erhöht.
+	 *        Weitere Details siehe erhoeheTrefferCount().
+	 * 
+	 * @param zeile Die Zeile der zu überprüfenden Position auf dem Spielfeld.
+	 * @param spalte Die Spalte der zu überprüfenden Position auf dem Spielfeld.
+	 * @param zeilenRichtung Die ZeilenRichtung des Schiffs (Richtungsmatrix: 1. Dimension).
+	 * @param spaltenRichtung Die SpaltenRichtung des Schiffs (Richtungsmatrix: 2. Dimension).
+	 * @return ---
+	 * 
+	 * @pre Der Treffer Count soll erhöht werden.
+	 * @post Gegebenenfalls sollen ncoh andere Schiffsteile um ihren Treffer Counter erhöht werden.
+	 *       Dann wird überprüft, ob es versenkt wurde und ob das Spiel endet.
+	 * 
+	 * @lastModified 26.08.2024
+	 * @since 21.08.2024
+	 * @author Johannes Schönwälder, Anton Unger
+	 */	
 	private void versenkungsTestSchleife(int zeile, int spalte, int zeilenRichtung, int spaltenRichtung) {
 		while(SpielFeld[zeile][spalte] instanceof Schiffe) {
 			((Schiffe) SpielFeld[zeile][spalte]).setAnzTreffer();
@@ -524,7 +571,25 @@ public class SchiffeData {
 			spalte += spaltenRichtung;
 		}
 	}
-
+	
+	/**
+	 * @brief Gibt heraus, ob das jeweilige Schiff versenkt ist oder nicht.
+	 * 
+	 *		   Es wird anhand der für das jeweilige Schiff abgespeicherten Information, wie viele Teile vom
+	 *        Schiff getroffen wurden, und der Länge des Schiffes abgeleite, ob es versenkt wird oder nicht.
+	 *        Diese Information wird dann direkt von der GUI abgefragtg und entgegengenommen.
+	 * 
+	 * @param zeile Die Zeile der zu überprüfenden Position auf dem Spielfeld.
+	 * @param spalte Die Spalte der zu überprüfenden Position auf dem Spielfeld.
+	 * @return Gibt 'true' zurück, wenn das Schiff versenkt wurde; andernfalls 'false'.
+	 * 
+	 * @pre Der Treffer Count wurde erhöht, falls ein Treffer vorlag.
+	 * @post Die GUI zeigt die Information an.
+	 * 
+	 * @lastModified 26.08.2024
+	 * @since 21.08.2024
+	 * @author Johannes Schönwälder
+	 */	
 	public boolean getVersenktGUI(int zeile, int spalte) {
 		
 		//boolean versenkt = SpielFeld[zeile][spalte].getVersenkt();
