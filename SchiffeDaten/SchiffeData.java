@@ -215,10 +215,14 @@ public class SchiffeData {
 	 * @lastModified 22.08.2024
 	 * @author Anton Unger
 	 */
-	//TODO Leere eingabe
 	private int[] zelleToInt(String f) throws Error {
 		System.out.println("[Data] Umwandlung " + f + " in Int");
 		int[] zelle = {0,0};
+		
+		if(f.isEmpty()) {
+			System.out.println("[Data] keine Eingabe");
+			throw new Error("Es wurde nichts eingegebn");
+		}
 		
 		 Scanner scanner = new Scanner(f);
 		 String eingabe = scanner.nextLine().toUpperCase();
@@ -281,8 +285,8 @@ public class SchiffeData {
 			}
 			
 			if(!(SpielFeld[zeile][spalte] instanceof FreiesFeld)) {
-				System.out.println("[Data] Feld "+ zeile + " " + spalte + " ist belegt");
-				throw new Error("Feld " + zeile + " " + spalte + " ist belegt");
+				System.out.println("[Data] Feld "+ spalte + " " + zeile + " ist belegt");
+				throw new Error("Feld " + (char)(spalte + 'A') + (zeile + 1) + " ist belegt");
 			}
 			zeile = zeile + r[0];
 			spalte = spalte + r[1];			
@@ -459,8 +463,8 @@ public class SchiffeData {
 		System.out.println("[Data] Setze schuss auf " + zelle);
 		
 		int[] feldInt = zelleToInt(zelle);
-		int zeile = feldInt[0];
-		int spalte = feldInt[1];
+		int zeile = feldInt[1];
+		int spalte = feldInt[0];
 		
 		if(SpielFeld[zeile][spalte].getTreffer()) {
 			System.out.println("[Data] Feld schon getroffen");
@@ -553,23 +557,23 @@ public class SchiffeData {
 	}
 	
 	/**
-	 * @brief Gibt an, ob das jeweilige Schiff versenkt ist oder nicht.
+	 * @brief Überprüft, ob ein Schiff an einer bestimmten Position versenkt wurde.
 	 * 
-	 * Es wird anhand der für das jeweilige Schiff abgespeicherten Information, wie viele Teile vom
-	 * Schiff getroffen wurden, und der Länge des Schiffes abgeleitet, ob es versenkt wird oder nicht.
-	 * Diese Information wird dann direkt von der GUI abgefragtg und entgegengenommen.
+	 * Diese Methode überprüft, ob das Schiff, das sich auf der angegebenen Zelle befindet, versenkt wurde.
+	 * Dazu wird das Schiff an den übergebenen Koordinaten (Zeile, Spalte) auf dem Spielfeld geprüft.
 	 * 
-	 * @param zeile Die Zeile der zu überprüfenden Position auf dem Spielfeld.
-	 * @param spalte Die Spalte der zu überprüfenden Position auf dem Spielfeld.
-	 * @return Gibt 'true' zurück, wenn das Schiff versenkt wurde; andernfalls 'false'.
+	 * @param zeile Die Zeilenkoordinate des Schiffs auf dem Spielfeld.
+	 * @param spalte Die Spaltenkoordinate des Schiffs auf dem Spielfeld.
+	 * @return Gibt 'true' zurück, wenn das Schiff auf der angegebenen Position versenkt wurde, 
+	 *         andernfalls 'false'.
 	 * 
-	 * @pre Der Treffer Count wurde erhöht, falls ein Treffer vorlag.
-	 * @post Die GUI zeigt die Information an.
+	 * @pre Die Zelle an den angegebenen Koordinaten muss ein Schiffsobjekt enthalten.
+	 * @post Gibt den Status des Schiffs (versenkt/nicht versenkt) an.
 	 * 
-	 * @lastModified 26.08.2024
+	 * @lastModified 28.08.2024
 	 * @since 21.08.2024
 	 * @author Johannes Schönwälder
-	 */	
+	 */
 	public boolean getVersenktGUI(int zeile, int spalte) {
 		
 		boolean versenkt = ((Schiffe) SpielFeld[zeile][spalte]).getVersenkt();

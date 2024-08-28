@@ -121,8 +121,20 @@ public class Kreuzer extends Schiffe{
 		return arrayPosition;
 	}
 
-    //TODO Anton
+    /**
+     * @brief Überprüft, ob das Schiff vollständig versenkt wurde.
+     * 
+     * Diese Methode prüft, ob die Anzahl der Treffer auf das Schiff gleich seiner Länge ist,
+     * d.h., ob das Schiff vollständig getroffen und somit versenkt wurde.
+     * 
+     * @return Gibt 'true' zurück, wenn das Schiff versenkt wurde, andernfalls 'false'.
+     * 
+     * @lastModified 28.08.2024
+     * @since 28.08.2024
+     * @author Anton Unger
+     */
 	public boolean getVersenkt() {
+		System.out.println("[Kreuzer] Schiff wurde versenkt " + (laenge == anzTreffer));
 		return laenge == anzTreffer;
-	}
+	}	
 }

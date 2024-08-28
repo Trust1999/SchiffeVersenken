@@ -23,7 +23,7 @@ public class Schlachtschiff extends Schiffe{
 	 * @author Johannes Schönwälder
 	 */	
     public boolean getTreffer() {
-        System.out.println("[Kreuzer] Treffer " + treffer);
+        System.out.println("[Schlachtschiff] Treffer " + treffer);
     	return treffer;
     }
     
@@ -35,7 +35,7 @@ public class Schlachtschiff extends Schiffe{
 	 * @author Johannes Schönwälder
 	 */	
     public void setTreffer() {
-		System.out.println("[Kreuzer] Treffer gespeichert");
+		System.out.println("[Schlachtschiff] Treffer gespeichert");
     	treffer = true;
 	}
     
@@ -49,7 +49,7 @@ public class Schlachtschiff extends Schiffe{
 	 * @author Johannes Schönwälder
 	 */	
     public int getLaenge() {
-    	System.out.println("[Kreuzer] Laenge " + laenge);
+    	System.out.println("[Schlachtschiff] Laenge " + laenge);
         return laenge;
     }
     
@@ -63,7 +63,7 @@ public class Schlachtschiff extends Schiffe{
 	 * @author Johannes Schönwälder
 	 */	
 	public int[] getRichtung() {
-		System.out.println("[Kreuzer] Ausrichtung " + Arrays.toString(richtung));
+		System.out.println("[Schlachtschiff] Ausrichtung " + Arrays.toString(richtung));
 		return richtung;
 	}
 	
@@ -77,7 +77,7 @@ public class Schlachtschiff extends Schiffe{
 	 * @author Johannes Schönwälder
 	 */	
 	public void setRichtung(int[] ausrichtung) {
-		System.out.println("[Kreuzer] Ausrichtung gespeichert");
+		System.out.println("[Schlachtschiff] Ausrichtung gespeichert");
 		this.richtung = ausrichtung;
 	}
 	
@@ -91,7 +91,7 @@ public class Schlachtschiff extends Schiffe{
 	 * @author Johannes Schönwälder
 	 */	
     public int getAnzTreffer() {
-    	System.out.println("[Kreuzer] Anzahl Treffer " + anzTreffer);
+    	System.out.println("[Schlachtschiff] Anzahl Treffer " + anzTreffer);
         return anzTreffer;
     }
     
@@ -103,7 +103,7 @@ public class Schlachtschiff extends Schiffe{
 	 * @author Johannes Schönwälder
 	 */	
     public void setAnzTreffer() {
-    	System.out.println("[Kreuzer] Anzahl Treffer gespeichert");
+    	System.out.println("[Schlachtschiff] Anzahl Treffer gespeichert");
     	this.anzTreffer++;
     }
     
@@ -117,12 +117,24 @@ public class Schlachtschiff extends Schiffe{
 	 * @author Johannes Schönwälder, Anton Unger
 	 */	
     public int getArrayPosition() {
-    	System.out.println("[Kreuzer] Position im Array " + arrayPosition);
+    	System.out.println("[Schlachtschiff] Position im Array " + arrayPosition);
 		return arrayPosition;
 	}
 
-    //TODO Anton
+    /**
+     * @brief Überprüft, ob das Schiff vollständig versenkt wurde.
+     * 
+     * Diese Methode prüft, ob die Anzahl der Treffer auf das Schiff gleich seiner Länge ist,
+     * d.h., ob das Schiff vollständig getroffen und somit versenkt wurde.
+     * 
+     * @return Gibt 'true' zurück, wenn das Schiff versenkt wurde, andernfalls 'false'.
+     * 
+     * @lastModified 28.08.2024
+     * @since 28.08.2024
+     * @author Anton Unger
+     */
 	public boolean getVersenkt() {
+		System.out.println("[Schlachtschiff] Schiff wurde versenkt " + (laenge == anzTreffer));
 		return laenge == anzTreffer;
 	}
 }
