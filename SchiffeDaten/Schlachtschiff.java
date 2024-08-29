@@ -2,12 +2,33 @@ package SchiffeDaten;
 
 import java.util.Arrays;
 
-//TODO
+/**
+ * @brief Deklaration der Klasse Schlachtschiff
+ * 
+ * Diese Klasse ist eine Unterklasse der Klasse Schiffe und legt fest, welche Eigenschaften dieses bestimmte
+ * Schiff genau hat.
+ * In diesem Fall handelt es sich um ein Schiff namens Schlachtschiff, welches 5 Felder lang ist.
+ * Es werden wichtige Daten wie die Länge, wie viele Treffer es bereits bekommen hat und in welche Richtung
+ * es ausgerichtet ist jeweils abgespeichert.
+ * 
+ * @lastModified 26.08.2024
+ * @since 21.08.2024
+ * @author Johannes Schönwälder
+ */	
 public class Schlachtschiff extends Schiffe{
 
 	protected static int anzahl = 1;
 	
-	//TODO
+	/**
+	 * @brief Konstruktor der Klasse Kreuzer
+	 * 
+	 * Die Länge dieses bestimmten Schiffs 'Schlachtschiff' wird auf 5 festgelegt und die Position im Positionsarry
+	 * wird auf 0 gesetzt.
+	 * 
+	 * @lastModified 26.08.2024
+	 * @since 21.08.2024
+	 * @author Johannes Schönwälder
+	 */	
     public Schlachtschiff() {
     	this.laenge = 5;
     	this.arrayPosition = 0;

@@ -2,12 +2,33 @@ package SchiffeDaten;
 
 import java.util.Arrays;
 
-//TODO
+/**
+ * @brief Deklaration der Klasse Zerstoerer
+ * 
+ * Diese Klasse ist eine Unterklasse der Klasse Schiffe und legt fest welche, Eigenschaften dieses bestimmte
+ * Schiff genau hat.
+ * In diesem Fall handelt es sich um ein Schiff namens Zerstörer, welches 3 Felder lang ist.
+ * Es werden wichtige Daten wie die Länge, wie viele Treffer es bereits bekommen hat und in welche Richtung
+ * es ausgerichtet ist jeweils abgespeichert.
+ * 
+ * @lastModified 26.08.2024
+ * @since 21.08.2024
+ * @author Johannes Schönwälder
+ */	
 public class Zerstoerer extends Schiffe{
 
 	protected static int anzahl = 3;
 	
-	//TODO
+	/**
+	 * @brief Konstruktor der Klasse Kreuzer
+	 * 
+	 * Die Länge dieses bestimmten Schiffs 'Zerstörer' wird auf 3 festgelegt und die Position im Positionsarry
+	 * wird auf 2 gesetzt.
+	 * 
+	 * @lastModified 26.08.2024
+	 * @since 21.08.2024
+	 * @author Johannes Schönwälder
+	 */	
 	public Zerstoerer() {
 	    this.laenge = 3;
 	    this.arrayPosition = 2;

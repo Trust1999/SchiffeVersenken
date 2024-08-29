@@ -2,12 +2,33 @@ package SchiffeDaten;
 
 import java.util.Arrays;
 
-//TODO
+/**
+ * @brief Deklaration der Klasse UBoot
+ * 
+ * Diese Klasse ist eine Unterklasse der Klasse Schiffe und legt fest, welche Eigenschaften dieses bestimmte
+ * Schiff genau hat.
+ * In diesem Fall handelt es sich um ein Schiff namens U-Boot, welches 2 Felder lang ist.
+ * Es werden wichtige Daten wie die Länge, wie viele Treffer es bereits bekommen hat und in welche Richtung
+ * es ausgerichtet ist jeweils abgespeichert.
+ * 
+ * @lastModified 26.08.2024
+ * @since 21.08.2024
+ * @author Johannes Schönwälder
+ */	
 public class UBoot extends Schiffe{
 
 	protected static int anzahl = 4;
 	
-	//TODO
+	/**
+	 * @brief Konstruktor der Klasse Kreuzer
+	 * 
+	 * Die Länge dieses bestimmten Schiffs 'U-Boot' wird auf 2 festgelegt und die Position im Positionsarry
+	 * wird auf 3 gesetzt.
+	 * 
+	 * @lastModified 26.08.2024
+	 * @since 21.08.2024
+	 * @author Johannes Schönwälder
+	 */	
     public UBoot() {
     	this.laenge = 2;
     	this.arrayPosition = 3;

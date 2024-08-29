@@ -2,12 +2,33 @@ package SchiffeDaten;
 
 import java.util.Arrays;
 
-//TODO
+/**
+ * @brief Deklaration der Klasse Kreuzer
+ * 
+ * Diese Klasse ist eine Unterklasse der Klasse Schiffe und legt fest, welche Eigenschaften dieses bestimmte
+ * Schiff genau hat.
+ * In diesem Fall handelt es sich um ein Schiff namens Kreuzer, welches 4 Felder lang ist.
+ * Es werden wichtige Daten wie die Länge, wie viele Treffer es bereits bekommen hat und in welche Richtung
+ * es ausgerichtet ist jeweils abgespeichert.
+ * 
+ * @lastModified 26.08.2024
+ * @since 21.08.2024
+ * @author Johannes Schönwälder
+ */	
 public class Kreuzer extends Schiffe{
 	
 	protected static int anzahl = 2;
 	
-	//TODO
+	/**
+	 * @brief Konstruktor der Klasse Kreuzer
+	 * 
+	 * Die Länge dieses bestimmten Schiffs 'Kreuzer' wird auf 4 festgelegt und die Position im Positionsarry
+	 * wird auf 1 gesetzt.
+	 * 
+	 * @lastModified 26.08.2024
+	 * @since 21.08.2024
+	 * @author Johannes Schönwälder
+	 */	
 	public Kreuzer() {
 		this.laenge = 4;
 		this.arrayPosition = 1;
