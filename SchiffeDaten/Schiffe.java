@@ -7,7 +7,6 @@ public abstract class Schiffe extends Felder {
     protected int[] richtung = new int[1];
     protected int arrayPosition;
 	protected int anzTreffer = 0;
-	protected boolean versenkt = false;
     
 	public abstract int getLaenge();
 	public abstract int[] getRichtung();
