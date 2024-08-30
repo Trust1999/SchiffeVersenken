@@ -17,8 +17,6 @@ import java.util.Arrays;
  */	
 public class Schlachtschiff extends Schiffe{
 
-	protected static int anzahl = 1;
-	
 	/**
 	 * @brief Konstruktor der Klasse Kreuzer
 	 * 

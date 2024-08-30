@@ -17,8 +17,6 @@ import java.util.Arrays;
  */	
 public class UBoot extends Schiffe{
 
-	protected static int anzahl = 4;
-	
 	/**
 	 * @brief Konstruktor der Klasse Kreuzer
 	 * 

@@ -17,8 +17,6 @@ import java.util.Arrays;
  */	
 public class Zerstoerer extends Schiffe{
 
-	protected static int anzahl = 3;
-	
 	/**
 	 * @brief Konstruktor der Klasse Kreuzer
 	 * 
