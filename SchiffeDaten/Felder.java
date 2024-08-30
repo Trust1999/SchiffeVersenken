@@ -13,7 +13,6 @@ package SchiffeDaten;
 public abstract class Felder {
 
 	protected boolean treffer = false;
-	protected boolean versenkt = false;
 
 	public abstract boolean getTreffer();
 	public abstract void setTreffer();
